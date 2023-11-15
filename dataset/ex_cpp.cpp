@@ -1,7 +1,6 @@
-#include <vector>
 
 int main() {
-    std::vector<int> v(1000, 1);
+    int v[1000];
 
     // Iterate through the array and double each element
     for (int i = 1; i < 1000; i++) {
