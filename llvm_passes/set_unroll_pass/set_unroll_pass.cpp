@@ -12,6 +12,7 @@
 #include "llvm/IR/PassManager.h"
 #include "llvm/Passes/PassBuilder.h"
 #include "llvm/Passes/PassPlugin.h"
+#include "llvm/Analysis/LoopInfo.h"
 
 
 using namespace llvm;
@@ -22,25 +23,31 @@ namespace {
 // look into loop pass
 
 // change to new pass
-struct LoopUnrollPass2 : public FunctionPass {
-  static char ID;
+struct SetUnrollPass : public PassInfoMixin<SetUnrollPass> {
 
-  LoopUnrollPass2() : FunctionPass(ID) {}
+  PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM) {
+    LoopInfo &LI = FAM.getResult<llvm::LoopAnalysis>(F);
+    ScalarEvolution &SE = FAM.getResult<ScalarEvolutionAnalysis>(F);
+    DominatorTree &DT = FAM.getResult<DominatorTreeAnalysis>(F);
+    AssumptionCache &AC = FAM.getResult<AssumptionAnalysis>(F);
+    TargetTransformInfo &TTI = FAM.getResult<TargetIRAnalysis>(F);
+    OptimizationRemarkEmitter &ORE = FAM.getResult<OptimizationRemarkEmitterAnalysis>(F);
+    // FAM.getResult<>()
+    // ScalarEvolution &SE = getAnalysis<ScalarEvolutionWrapperPass>().getSE();
+    // DominatorTree DT = DominatorTree(F);
+    // AssumptionCache &AC = getAnalysis<AssumptionCacheTracker>().getAssumptionCache(F);
+    // llvm::TargetTransformInfo &TTI = getAnalysis<llvm::TargetTransformInfoWrapperPass>().getTTI(F);
+    // OptimizationRemarkEmitter ORE(&F);
 
-  bool runOnFunction(Function &F) {
-    LoopInfo &LI = getAnalysis<LoopInfoWrapperPass>().getLoopInfo();
-    ScalarEvolution &SE = getAnalysis<ScalarEvolutionWrapperPass>().getSE();
-    DominatorTree DT = DominatorTree(F);
-    AssumptionCache &AC = getAnalysis<AssumptionCacheTracker>().getAssumptionCache(F);
-    llvm::TargetTransformInfo &TTI = getAnalysis<llvm::TargetTransformInfoWrapperPass>().getTTI(F);
-    OptimizationRemarkEmitter ORE(&F);
-
+    bool modified = false;
 
     for (Loop *L : LI) {
+
+      errs() << "At loop " << *L << "\n";
     
       const SCEV *trip_count = SE.getBackedgeTakenCount(L);
       if (isa<SCEVConstant>(trip_count)) {
-        unsigned int unroll_factor = 2;
+        unsigned int unroll_factor = 4;
 
         UnrollLoopOptions ULO = {
             unroll_factor /* Count */, 
@@ -57,18 +64,25 @@ struct LoopUnrollPass2 : public FunctionPass {
 
         if (res == llvm::LoopUnrollResult::Unmodified){
           errs() << "unmodified\n";
-          return false;
         }
         else if (res == llvm::LoopUnrollResult::PartiallyUnrolled){
           errs() << "partially unrolled\n";
+          modified = true;
         }
         else {
           errs() << "fully unrolled\n";
+          modified = true;
         }
       }
     }
 
-    return true;
+    if(modified){
+      return PreservedAnalyses::none();
+    }
+    else{
+      return PreservedAnalyses::all();
+    }
+    
   }
 
   // // This is required for the pass to be recognized and initialized by LLVM
@@ -92,8 +106,8 @@ extern "C"::llvm::PassPluginLibraryInfo LLVM_ATTRIBUTE_WEAK llvmGetPassPluginInf
    PB.registerPipelineParsingCallback(
     [](StringRef Name, FunctionPassManager &FPM,
     ArrayRef<PassBuilder::PipelineElement>) {
-     if(Name == "set-unroll-pass"){
-      FPM.addPass(LoopUnrollPass2());
+     if(Name == "set_unroll_pass"){
+      FPM.addPass(SetUnrollPass());
       return true;
      }
      return false;
