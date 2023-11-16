@@ -1,0 +1,1 @@
+add_llvm_pass_plugin(set_unroll_pass set_unroll_pass.cpp)

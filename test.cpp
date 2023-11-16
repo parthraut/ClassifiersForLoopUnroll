@@ -1,16 +1,16 @@
 
-#include <iostream>
-// #pragma clang loop unroll_count(1)
-
-#include <iostream>
 
 int main() {
     int v[1000] = {0};
 
     // #pragma clang loop unroll_count(1)
+
+    // auto start_X = timer.start()
     for(int i = 0; i < 1000; i++){
         v[i] = i;
     }
+    // auto end_X = timer.end()
+    // call add_to_loop(0, end_x-start_x)
 
     // Iterate through the array and double each element
     // #pragma clang loop unroll_count(1)
@@ -24,9 +24,6 @@ int main() {
         }
     }
 
-    
-
-    std::cout << v[0] << std::endl;
-
+    // output_times()
     return 0;
 }
