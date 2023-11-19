@@ -1,3 +1,9 @@
+cmake_minimum_required(VERSION 3.22)
+cmake_policy(SET CMP0057 NEW)
+
+# Point to the custom LLVM build
+set(LLVM_DIR "/home/praut/CompilersFinalProject/llvm-project-build/lib/cmake/llvm")
+
 find_package(LLVM REQUIRED CONFIG)
 list(APPEND CMAKE_MODULE_PATH "${LLVM_CMAKE_DIR}")
 include(AddLLVM)
