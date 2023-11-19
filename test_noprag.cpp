@@ -1,3 +1,6 @@
+
+#include <iostream>
+
 int main() {
     int v[1000];
 
