@@ -1,0 +1,28 @@
+- Loop unrolling pass (pass to set unroll factor)
+- Inserting Timing Code pass (insert timing code for each loop)
+
+- Deciding on what features to use for model
+    - write a pass that extracts features from each loop, stores in a json object shown below:
+
+- Preprocessing script and model in python 
+    - take in the json obj and train the model
+
+
+output of dataset:
+
+json obj:
+[
+    file_name : {
+                    [
+                        loop_line_num: #
+                        feature_1 : #
+                        feature_2 : #
+                        .
+                        .
+                        .
+                        feature_n : #
+                        optimal_unroll_factor: #
+                    ]
+                    
+                }
+]
