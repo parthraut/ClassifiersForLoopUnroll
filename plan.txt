@@ -10,19 +10,86 @@
 
 output of dataset:
 
+
 json obj:
-[
-    file_name : {
-                    [
-                        loop_line_num: #
-                        feature_1 : #
-                        feature_2 : #
-                        .
-                        .
-                        .
-                        feature_n : #
-                        optimal_unroll_factor: #
-                    ]
-                    
-                }
-]
+{
+    filename: [
+        {
+            features: {
+                feature1: <value>,
+                feature2: <value>,
+                feature3: <value>,
+                ...
+
+            },
+            label_info: [
+                <list of execution times for LUF = 1>,
+                <list of execution times for LUF = 2>,
+                <list of execution times for LUF = 4>,
+                <list of execution times for LUF = 8>,
+                ...
+            ]
+        },
+        ...
+    ],
+    ...
+
+}
+
+features:
+
+ # MIT paper
+ 
+ ## feature vector 1
+ - number of operands
+ - live range size
+ - critical path length
+ - number of operations
+ - loop trip count
+ 
+ ## feature vector 2
+ - number of floating point operations
+ - loop nest level
+ - number of operands
+ - number of branches
+ - number of memory operations
+
+ # High Level Synthesis
+ - Critical Path
+ - Loop Trip Count
+ - Has Loop Carried Dependencies
+ - number of loads
+ - number of stores
+
+# overall baseline features
+1. number of operands
+2. live range size
+3. critical path length
+4. number of operations
+5. loop trip count
+6. number of floating point operations
+7. loop nest level 
+8. number of operands
+9. number of branches
+10. number of memory operations*
+11. has loop carried Dependencies
+12. number of loads 
+13. number of stores
+* 12 and 13 can be added to create 10
+
+ our features:
+
+- 
+- new features:
+ - recMII
+ - ResMII
+ - distance of Dependencies
+ - (weighted, if possible) average path length
+    - if llvm predicts branch prob without profile data, weight avg
+
+recMII vs ResMII - from lecture (resource constrained vs path contrained loop)
+distances of Dependencies
+
+
+
+LLVM -> cost analysis, analysis, heuristics -> ML

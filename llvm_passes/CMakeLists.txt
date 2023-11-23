@@ -13,3 +13,4 @@ add_definitions(${LLVM_DEFINITIONS_LIST})
 include_directories(${LLVM_INCLUDE_DIRS})
 
 add_subdirectory(set_unroll_pass)
+add_subdirectory(loop_unroll_pass)
