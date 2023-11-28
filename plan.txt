@@ -62,28 +62,31 @@ features:
  - number of stores
 
 # overall baseline features
-1. number of operands
+1. number of operands *
 2. live range size
 3. critical path length
-4. number of operations
-5. loop trip count
-6. number of floating point operations
+4. number of operations *
+5. loop trip count *
+6. number of floating point operations *
 7. loop nest level 
-8. number of operands
-9. number of branches
-10. number of memory operations*
-11. has loop carried Dependencies
-12. number of loads 
-13. number of stores
-* 12 and 13 can be added to create 10
+8. number of branches *
+9. number of memory operations *
+10. has loop carried Dependencies
+11. number of loads *
+12. number of stores *
+* 11 and 12 can be added to create 10
 
  our features:
 
 - 
 - new features:
- - recMII
- - ResMII
- - distance of Dependencies
+ - recMII *
+ - ResMII *
+ - distance of Dependencies *
+
+ if cant figure out recMII and distance dep: *
+    - number of loop carried dependencies *
+
  - (weighted, if possible) average path length
     - if llvm predicts branch prob without profile data, weight avg
 

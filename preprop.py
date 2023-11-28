@@ -1,5 +1,6 @@
 import sys
 from pycparser import c_parser, c_ast, parse_file
+import pdb
 
 # Visitor class to modify the C AST
 class LoopVisitor(c_ast.NodeVisitor):
@@ -52,8 +53,12 @@ add_to_loop({loop_label}, duration);
         """ Check if the loop has a nested loop """
         return not self.is_innermost_loop(node)
 
+    
+
 # Parse the C file
-ast = parse_file('example.c', use_cpp=True)
+ast = parse_file('simple_test.c', use_cpp=True)
+
+pdb.set_trace()
 
 # Visit and modify the AST
 visitor = LoopVisitor()
