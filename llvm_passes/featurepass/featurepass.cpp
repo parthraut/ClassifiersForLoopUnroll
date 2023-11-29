@@ -7,20 +7,28 @@
 #include "llvm/Support/Format.h"
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/IR/CFG.h"
+#include "llvm/Analysis/LoopInfo.h"
+#include "llvm/Analysis/LoopIterator.h"
+#include "llvm/Analysis/LoopPass.h"
+#include "llvm/Analysis/ScalarEvolution.h"
 
 #include <iostream>
 #include <vector>
 #include <optional>
+// #include <nlohmann/json.hpp>
+// using json = nlohmann::json;
 
 using namespace llvm;
 using namespace std;
 
 #define ALUI 0
 #define ALUF 1
-#define MEM 2
-#define BIASEDBRANCH 3
-#define UNBIASEDBRANCH 4
-#define OTHERS 5
+#define LOAD 2
+#define STORE 3
+#define MEM 4
+#define BIASEDBRANCH 5
+#define UNBIASEDBRANCH 6
+#define OTHERS 7
 
 #define IS_ALUI(ins)                                                               \
   (ins.getOpcode() == Instruction::Add || ins.getOpcode() == Instruction::Sub ||   \
@@ -36,9 +44,15 @@ using namespace std;
    ins.getOpcode() == Instruction::FMul || ins.getOpcode() == Instruction::FDiv || \
    ins.getOpcode() == Instruction::FRem || ins.getOpcode() == Instruction::FCmp)
 
+#define IS_LOAD(ins) \
+  (ins.getOpcode() == Instruction::Load)
+
+#define IS_STORE(ins) \
+  (ins.getOpcode() == Instruction::Store)
+
 #define IS_MEM(ins)                                                                          \
-  (ins.getOpcode() == Instruction::Alloca || ins.getOpcode() == Instruction::Load ||         \
-   ins.getOpcode() == Instruction::Store || ins.getOpcode() == Instruction::GetElementPtr || \
+  (ins.getOpcode() == Instruction::Alloca ||                                                 \
+   ins.getOpcode() == Instruction::GetElementPtr ||                                          \
    ins.getOpcode() == Instruction::Fence || ins.getOpcode() == Instruction::AtomicCmpXchg || \
    ins.getOpcode() == Instruction::AtomicRMW)
 
@@ -54,75 +68,24 @@ namespace
 
     PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM)
     {
-      // These variables contain the results of some analysis passes.
-      // Go through the documentation to see how they can be used.
-      llvm::BlockFrequencyAnalysis::Result &bfi = FAM.getResult<BlockFrequencyAnalysis>(F);
-      llvm::BranchProbabilityAnalysis::Result &bpi = FAM.getResult<BranchProbabilityAnalysis>(F);
 
-      vector<float> opCounts(6, 0); // Stores function counts for each operation type
-      uint64_t dynOpCount = 0;      // Stores function dynamic operation count
-      for (BasicBlock &BB : F)
-      {
-        uint64_t numOps = 0; // Stores operation count for this basic block
-        uint64_t bpc = *bfi.getBlockProfileCount(&BB);
-        for (Instruction &I : BB)
-        {
-          if (IS_ALUI(I))
-          {
-            opCounts[ALUI] += bpc;
-          }
-          else if (IS_ALUF(I))
-          {
-            opCounts[ALUF] += bpc;
-          }
-          else if (IS_MEM(I))
-          {
-            opCounts[MEM] += bpc;
-          }
-          else if (IS_BRANCH(I))
-          {
-            // Determine if branch is biased or not
-            bool isBiased = false;
-            for (BasicBlock *S : successors(&BB))
-            {
-              // Get edge probability for each successor & see if one is > 0.8
-              BranchProbability bp = bpi.getEdgeProbability(&BB, S);
-              if (bp > BranchProbability(8, 10))
-              {
-                // One is > 0.8 --> branch is biased, stop checking and update accordingly
-                isBiased = true;
-                opCounts[BIASEDBRANCH] += bpc;
-                break;
-              }
-            }
-            if (!isBiased)
-            {
-              // None are > 0.8 --> branch is unbiased, update accordingly
-              opCounts[UNBIASEDBRANCH] += bpc;
-            }
-          }
-          else
-          {
-            opCounts[OTHERS] += bpc;
-          }
-          ++numOps;
-        }
-        dynOpCount += bpc * numOps;
-      }
+      // LoopInfo &LI = getAnalysis<LoopInfoWrapperPass>().getLoopInfo();
+      llvm::LoopAnalysis::Result &LI = FAM.getResult<LoopAnalysis>(F);
+      ScalarEvolution SE = getAnalysis<ScalarEvolutionWrapperPass>().getSE();
 
-      // Print stats
-      errs() << F.getName();
-      errs() << ", " << dynOpCount;
-      for (int i = 0; i < opCounts.size(); i++)
+      for (Loop *L : LI)
       {
-        if (dynOpCount == 0)
-          errs() << ", " << format("%.3f", opCounts[i]);
-        else
+        if (L->getSubLoops().empty())
         {
-          errs() << ", " << format("%.3f", opCounts[i]);
+          if (L->getCanonicalInductionVariable() && L->getCanonicalInductionVariable()->getType()->isIntegerTy())
+          {
+            const SCEV *trip_count_SCEV = SE->getBackedgeTakenCount(L);
+            const ConstantInt *cint_trip_count = dyn_cast<ConstantInt>(trip_count_SCEV->getAPInt());
+            uint64_t trip_count = cint_trip_count->getZExtValue();
+            errs() << trip_count;
+          }
         }
       }
-      errs() << "\n";
 
       return PreservedAnalyses::all();
     }
@@ -132,16 +95,16 @@ namespace
 extern "C" ::llvm::PassPluginLibraryInfo LLVM_ATTRIBUTE_WEAK llvmGetPassPluginInfo()
 {
   return {
-      LLVM_PLUGIN_API_VERSION, "HW1Pass", "v0.1",
+      LLVM_PLUGIN_API_VERSION, "FeaturePass", "v0.1",
       [](PassBuilder &PB)
       {
         PB.registerPipelineParsingCallback(
             [](StringRef Name, FunctionPassManager &FPM,
                ArrayRef<PassBuilder::PipelineElement>)
             {
-              if (Name == "hw1")
+              if (Name == "featurepass")
               {
-                FPM.addPass(HW1Pass());
+                FPM.addPass(FeaturePass());
                 return true;
               }
               return false;
