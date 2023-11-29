@@ -49,7 +49,7 @@ using namespace std;
 namespace
 {
 
-  struct HW1Pass : public PassInfoMixin<HW1Pass>
+  struct FeaturePass : public PassInfoMixin<FeaturePass>
   {
 
     PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM)
@@ -59,9 +59,6 @@ namespace
       llvm::BlockFrequencyAnalysis::Result &bfi = FAM.getResult<BlockFrequencyAnalysis>(F);
       llvm::BranchProbabilityAnalysis::Result &bpi = FAM.getResult<BranchProbabilityAnalysis>(F);
 
-      // Add your code here
-      // SmallVector<uint64_t, 6> opCounts;
-      // vector<uint64_t> opCounts(6, 0); // Stores function counts for each operation type
       vector<float> opCounts(6, 0); // Stores function counts for each operation type
       uint64_t dynOpCount = 0;      // Stores function dynamic operation count
       for (BasicBlock &BB : F)
@@ -90,8 +87,6 @@ namespace
             {
               // Get edge probability for each successor & see if one is > 0.8
               BranchProbability bp = bpi.getEdgeProbability(&BB, S);
-              // float ratio = static_cast<double>(bp.getNumerator()) / static_cast<double>(bp.getDenominator());
-              // if (ratio > 0.8)
               if (bp > BranchProbability(8, 10))
               {
                 // One is > 0.8 --> branch is biased, stop checking and update accordingly
