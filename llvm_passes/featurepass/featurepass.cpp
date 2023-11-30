@@ -26,9 +26,8 @@ using namespace std;
 #define LOAD 2
 #define STORE 3
 #define MEM 4
-#define BIASEDBRANCH 5
-#define UNBIASEDBRANCH 6
-#define OTHERS 7
+#define BRANCH 5
+#define OTHERS 6
 
 #define IS_ALUI(ins)                                                               \
   (ins.getOpcode() == Instruction::Add || ins.getOpcode() == Instruction::Sub ||   \
@@ -71,7 +70,7 @@ namespace
 
       // LoopInfo &LI = getAnalysis<LoopInfoWrapperPass>().getLoopInfo();
       llvm::LoopAnalysis::Result &LI = FAM.getResult<LoopAnalysis>(F);
-      ScalarEvolution SE = getAnalysis<ScalarEvolutionWrapperPass>().getSE();
+      ScalarEvolution SE = getAnalysis<ScalarEvolutionWrapperPass>().getSE(F);
 
       for (Loop *L : LI)
       {
@@ -85,6 +84,58 @@ namespace
             errs() << trip_count;
           }
         }
+
+        vector<float> counts(7, 0);
+
+        // Loop over all basic blocks in the loop
+        for (BasicBlock *BB : L->getBlocks())
+        {
+          // Loop over all instruction in the basic block
+          for (Instruction &I : *BB)
+          {
+            // Check what type of instruction we have
+            if (IS_ALUI(I))
+            {
+              ++counts[ALUI];
+            }
+            else if (IS_ALUF(I))
+            {
+              ++counts[ALUF];
+            }
+            else if (IS_LOAD(I))
+            {
+              ++counts[LOAD];
+              ++counts[MEM];
+            }
+            else if (IS_STORE(I))
+            {
+              ++counts[STORE];
+              ++counts[MEM];
+            }
+            else if (IS_MEM(I))
+            {
+              ++counts[MEM];
+            }
+            else if (IS_BRANCH(I))
+            {
+              ++counts[BRANCH];
+            }
+            else
+            {
+              ++counts[OTHERS];
+            }
+          }
+        }
+
+        // Print stats
+        // Print format: ALUI ALUF LOAD STORE MEM BRANCH OTHERS TOTAL
+        int sum = 0;
+        for (int i = 0; i < counts.size(); i++)
+        {
+          errs() << ", " << format("%.3f", counts[i]);
+          sum += counts[i];
+        }
+        errs() << ", " << sum << "\n";
       }
 
       return PreservedAnalyses::all();
