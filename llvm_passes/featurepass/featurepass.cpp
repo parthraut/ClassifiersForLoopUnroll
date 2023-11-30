@@ -11,6 +11,7 @@
 #include "llvm/Analysis/LoopIterator.h"
 #include "llvm/Analysis/LoopPass.h"
 #include "llvm/Analysis/ScalarEvolution.h"
+#include "llvm/Pass.h"
 
 #include <iostream>
 #include <vector>
@@ -76,7 +77,7 @@ namespace
 
       // LoopInfo &LI = getAnalysis<LoopInfoWrapperPass>().getLoopInfo();
       llvm::LoopAnalysis::Result &LI = FAM.getResult<LoopAnalysis>(F);
-      ScalarEvolution SE = getAnalysis<ScalarEvolutionWrapperPass>().getSE(F);
+      ScalarEvolution &SE = FAM.getResult<ScalarEvolutionAnalysis>(F);
 
       for (Loop *L : LI)
       {
@@ -84,9 +85,10 @@ namespace
         {
           if (L->getCanonicalInductionVariable() && L->getCanonicalInductionVariable()->getType()->isIntegerTy())
           {
-            const SCEV *trip_count_SCEV = SE->getBackedgeTakenCount(L);
-            const ConstantInt *cint_trip_count = dyn_cast<ConstantInt>(trip_count_SCEV->getAPInt());
-            uint64_t trip_count = cint_trip_count->getZExtValue();
+            const SCEV *trip_count_SCEV = SE.getBackedgeTakenCount(L);
+            const SCEVConstant *constantSCEV = dyn_cast<SCEVConstant>(trip_count_SCEV);
+            APInt constantValue = constantSCEV->getAPInt();
+            uint64_t trip_count = constantValue.getLimitedValue();
             errs() << trip_count;
           }
         }
@@ -133,8 +135,14 @@ namespace
           }
         }
 
+        Instruction *I_line = L->getHeader()->getFirstNonPHIOrDbg();
+        if (auto DL = I_line->getDebugLoc())
+        {
+          // Extract the line number from the DebugLoc
+          errs() << DL.getLine();
+        }
         // Print stats
-        // Print format: ALUI ALUF LOAD STORE MEM BRANCH OTHERS TOTAL
+        // Print format: LINE_NUM ALUI ALUF LOAD STORE MEM BRANCH OTHERS TOTAL
         int sum = 0;
         for (int i = 0; i < counts.size(); i++)
         {
