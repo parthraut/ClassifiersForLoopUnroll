@@ -65,6 +65,12 @@ namespace
   struct FeaturePass : public PassInfoMixin<FeaturePass>
   {
 
+    // void getAnalysisUsage(llvm::AnalysisUsage &AU) const override
+    // {
+    //   AU.addRequired<llvm::ScalarEvolutionWrapperPass>();
+    //   AU.setPreservesAll(); // Indicate that the pass doesn't modify the function
+    // }
+
     PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM)
     {
 
