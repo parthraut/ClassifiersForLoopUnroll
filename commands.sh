@@ -12,8 +12,7 @@ clang++ -std=c++17 -O3 -Xclang -Rpass=loop-unroll -Xclang -Rpass-missed=loop-unr
 cmake ..    # must be in the build folder
 make        # must be in the build folder
 
-clang -g -emit-llvm -S test_no_nested.cpp -Xclang -disable-O0-optnone -o test.ll
-clang -g -emit-llvm -S test_no_nested.cpp -Xclang -disable-O0-optnone -o test.ll #run from project dir after making pass
+clang -emit-llvm -S test_no_nested.cpp -Xclang -disable-O0-optnone -o test.ll
 
 clang++ -std=c++17 -O3 -Xclang -Rpass=loop-unroll -Xclang -Rpass-missed=loop-unroll -emit-llvm -S test.cpp -Xclang -disable-O0-optnone -o test.ll
 clang++ -std=c++17 -O3 -Xclang -Rpass=loop-unroll -Xclang -Rpass-missed=loop-unroll -emit-llvm -S test_no_nested.cpp -Xclang -disable-O0-optnone -o test.ll
@@ -22,7 +21,6 @@ clang++ -std=c++17 -O3 -fno-unroll-loops -Xclang -Rpass-missed=loop-unroll -emit
 
 opt -disable-output -load-pass-plugin=./llvm_passes/build/set_unroll_pass/set_unroll_pass.so -passes="set_unroll_pass" test.ll
 opt -disable-output -load-pass-plugin=./llvm_passes/build/loop_unroll_pass/loop_unroll_pass.so -passes="loop_unroll_pass" test.ll
-opt -disable-output -load-pass-plugin=./llvm_passes/build/featurepass/featurepass.so -passes="featurepass" test.ll #run from project dir after clang instr
 
 opt -disable-output -load-pass-plugin=./llvm_passes/build/set_unroll_pass/set_unroll_pass.so -passes=set_unroll_pass test_nonest.ll
 
@@ -92,3 +90,6 @@ llvm-project-build/bin/clang++ -I /home/praut/CompilersFinalProject/llvm-project
 
 
 clang++ -I /llvm-project/clang/include/ clang_pass/clang_pass.cpp
+
+
+clang++ -I/home/praut/CompilersFinalProject/external/json/include -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -L /usr/lib/gcc/x86_64-linux-gnu/11 -std=c++17 -O3 -Xclang -Rpass=loop-unroll -Xclang -Rpass-missed=loop-unroll preprocessed/simple_test/1_simple_test.cpp time.cpp -o output_exe
