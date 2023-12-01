@@ -12,12 +12,15 @@
 #include "llvm/Analysis/LoopPass.h"
 #include "llvm/Analysis/ScalarEvolution.h"
 #include "llvm/Pass.h"
+#include <llvm/Analysis/ScalarEvolutionExpressions.h>
 
 #include <iostream>
 #include <vector>
 #include <optional>
-// #include <nlohmann/json.hpp>
-// using json = nlohmann::json;
+
+// NOTE, must add path -I/home/praut/CompilersFinalProject/external/json/include before compiling
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
 
 using namespace llvm;
 using namespace std;
@@ -60,6 +63,7 @@ using namespace std;
   (ins.getOpcode() == Instruction::Br || ins.getOpcode() == Instruction::Switch || \
    ins.getOpcode() == Instruction::IndirectBr)
 
+
 namespace
 {
 
@@ -74,13 +78,28 @@ namespace
 
     PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM)
     {
+      /* OUTPUT: json with feture information
 
+      {
+        loop_line_num : {
+          feature1: []
+          feature2: []
+          ...
+        }
+      }
+      */
+
+      json features;
+
+      /* ANALYSES NEEDED BEGIN */
       // LoopInfo &LI = getAnalysis<LoopInfoWrapperPass>().getLoopInfo();
       llvm::LoopAnalysis::Result &LI = FAM.getResult<LoopAnalysis>(F);
       ScalarEvolution &SE = FAM.getResult<ScalarEvolutionAnalysis>(F);
+      /* ANALYSES NEEDED END */
 
       for (Loop *L : LI)
       {
+        // if loop is a fully inner nested loop
         if (L->getSubLoops().empty())
         {
           if (L->getCanonicalInductionVariable() && L->getCanonicalInductionVariable()->getType()->isIntegerTy())
