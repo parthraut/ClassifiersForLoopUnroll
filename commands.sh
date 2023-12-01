@@ -95,3 +95,18 @@ clang++ -I /llvm-project/clang/include/ clang_pass/clang_pass.cpp
 clang++ -I/home/praut/CompilersFinalProject/external/json/include -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -L /usr/lib/gcc/x86_64-linux-gnu/11 -std=c++17 -O3 -Xclang -Rpass=loop-unroll -Xclang -Rpass-missed=loop-unroll preprocessed/simple_test/1_simple_test.cpp time.cpp -o output_exe
 
 # to test pass
+opt -disable-output -load-pass-plugin=./llvm_passes/build/featurepass/featurepass.so -passes="featurepass" test.ll
+
+
+# To profile
+clang++ -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -L /usr/lib/gcc/x86_64-linux-gnu/11  -fprofile-instr-generate -fcoverage-mapping test_no_nested.cpp -o test_no_nested
+LLVM_PROFILE_FILE="test_no_nested.profraw" ./test_no_nested
+
+llvm-profdata merge -sparse test_no_nested.profraw -o test_no_nested.profdata
+
+opt -disable-output -profile-data="test_no_nested.profdata" -load-pass-plugin=./llvm_passes/build/featurepass/featurepass.so -passes="featurepass" test.ll
+
+
+
+
+

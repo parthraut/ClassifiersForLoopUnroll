@@ -66,12 +66,12 @@ features:
 2. live range size
 3. critical path length
 4. number of operations *
-5. loop trip count **
+5. loop trip count *
 6. number of floating point operations **
-7. loop nest level 
+7. loop nest level *
 8. number of branches **
 9. number of memory operations **
-10. has loop carried Dependencies
+10. has loop carried Dependencies *
 11. number of loads **
 12. number of stores **
 * 11 and 12 can be added to create 10
@@ -81,8 +81,15 @@ features:
 - 
 - new features:
  - recMII *
- - ResMII *
+ - ResMII * (3 different resource unit combos hardcoded -)
  - distance of Dependencies *
+ - number of intra loop dependencies
+ - # of array reads
+ - # of array writes
+ - # of array accesses
+ - # of unique arrays accessed
+ - Maximum Dependency distance
+ - Small Iteration Count Heuristic
 
  if cant figure out recMII and distance dep: *
     - number of loop carried dependencies *

@@ -13,6 +13,10 @@
 #include "llvm/Analysis/ScalarEvolution.h"
 #include "llvm/Pass.h"
 #include <llvm/Analysis/ScalarEvolutionExpressions.h>
+#include "llvm/Analysis/DependenceAnalysis.h"
+#include "llvm/IR/LegacyPassManager.h"
+#include "llvm/IR/PassManager.h"
+#include "llvm/Transforms/Scalar/IndVarSimplify.h"
 
 #include <iostream>
 #include <vector>
@@ -76,12 +80,27 @@ namespace
     //   AU.setPreservesAll(); // Indicate that the pass doesn't modify the function
     // }
 
+    int scev_to_int(SCEV* scev) {
+      const SCEVConstant *constantSCEV = dyn_cast<SCEVConstant>(scev);
+      APInt constantValue = constantSCEV->getAPInt();
+      int64_t int_val = constantValue.getLimitedValue();
+      return int_val;
+    }
+
+    int scev_to_int(const SCEV* scev) {
+      const SCEVConstant *constantSCEV = dyn_cast<SCEVConstant>(scev);
+      APInt constantValue = constantSCEV->getAPInt();
+      int64_t int_val = constantValue.getLimitedValue();
+      return int_val;
+    }
+
     PreservedAnalyses run(Function &F, FunctionAnalysisManager &FAM)
     {
       /* OUTPUT: json with feture information
 
       {
-        loop_line_num : {
+        {
+          loop_line_number: int
           feature1: []
           feature2: []
           ...
@@ -95,6 +114,7 @@ namespace
       // LoopInfo &LI = getAnalysis<LoopInfoWrapperPass>().getLoopInfo();
       llvm::LoopAnalysis::Result &LI = FAM.getResult<LoopAnalysis>(F);
       ScalarEvolution &SE = FAM.getResult<ScalarEvolutionAnalysis>(F);
+      DependenceInfo depInfo = FAM.getResult<DependenceAnalysis>(F);
       /* ANALYSES NEEDED END */
 
       for (Loop *L : LI)
@@ -102,74 +122,153 @@ namespace
         // if loop is a fully inner nested loop
         if (L->getSubLoops().empty())
         {
+          // init inner json
+          json loop_features;
+
+          /* GET LOOP LINE NUMBER BEGIN */
+            int line_number = -1;
+            Instruction *I_line = L->getHeader()->getFirstNonPHIOrDbg();
+            if (auto DL = I_line->getDebugLoc())
+            {
+              // Extract the line number from the DebugLoc
+              line_number = DL.getLine();
+            }
+            loop_features["loop_line_number"] = line_number;
+
+          /* GET LOOP LINE NUMBER END */
+
+          /* FEATURE 1 (Trip count) EXRACTION BEGIN */
+          // stores trip count, if not known set to -1
+
+          int64_t trip_count = -1;
+          errs() << "before trip count loop\n";
+          if (L->getCanonicalInductionVariable()) {
+            errs() << "loop has induction var\n";
+          } else {
+            errs() << "loop DOES NOT induction var\n";
+          }
+
           if (L->getCanonicalInductionVariable() && L->getCanonicalInductionVariable()->getType()->isIntegerTy())
           {
             const SCEV *trip_count_SCEV = SE.getBackedgeTakenCount(L);
             const SCEVConstant *constantSCEV = dyn_cast<SCEVConstant>(trip_count_SCEV);
             APInt constantValue = constantSCEV->getAPInt();
-            uint64_t trip_count = constantValue.getLimitedValue();
-            errs() << trip_count;
+            trip_count = constantValue.getLimitedValue();
           }
-        }
 
-        vector<float> counts(7, 0);
+          loop_features["trip_count"] = trip_count;
 
-        // Loop over all basic blocks in the loop
-        for (BasicBlock *BB : L->getBlocks())
-        {
-          // Loop over all instruction in the basic block
-          for (Instruction &I : *BB)
+            if (SE.hasLoopInvariantBackedgeTakenCount(L)) {
+              const SCEV *TripCountSCEV = SE.getBackedgeTakenCount(L);
+              if (isa<SCEVConstant>(TripCountSCEV)) {
+                  const SCEVConstant *TripCountConstant = cast<SCEVConstant>(TripCountSCEV);
+                  uint64_t TripCount = TripCountConstant->getValue()->getZExtValue();
+
+                  // Use TripCount as needed
+                  errs() << "TripCount: " << TripCount << "\n";
+              }
+              else{
+                errs() << "NO FING TRIP COUNT KNOWN >:(\n";
+              }
+          }
+          /* FEATURE 1 (Trip count) EXRACTION END */
+
+          /* FEATURE 2 (Instruction Counts) EXRACTION BEGIN */
+          vector<float> counts(7, 0);
+                  // Loop over all basic blocks in the loop
+          for (BasicBlock *BB : L->getBlocks())
           {
-            // Check what type of instruction we have
-            if (IS_ALUI(I))
+            // Loop over all instruction in the basic block
+            for (Instruction &I : *BB)
             {
-              ++counts[ALUI];
-            }
-            else if (IS_ALUF(I))
-            {
-              ++counts[ALUF];
-            }
-            else if (IS_LOAD(I))
-            {
-              ++counts[LOAD];
-              ++counts[MEM];
-            }
-            else if (IS_STORE(I))
-            {
-              ++counts[STORE];
-              ++counts[MEM];
-            }
-            else if (IS_MEM(I))
-            {
-              ++counts[MEM];
-            }
-            else if (IS_BRANCH(I))
-            {
-              ++counts[BRANCH];
-            }
-            else
-            {
-              ++counts[OTHERS];
+              // Check what type of instruction we have
+              if (IS_ALUI(I))
+              {
+                ++counts[ALUI];
+              }
+              else if (IS_ALUF(I))
+              {
+                ++counts[ALUF];
+              }
+              else if (IS_LOAD(I))
+              {
+                ++counts[LOAD];
+                ++counts[MEM];
+              }
+              else if (IS_STORE(I))
+              {
+                ++counts[STORE];
+                ++counts[MEM];
+              }
+              else if (IS_MEM(I))
+              {
+                ++counts[MEM];
+              }
+              else if (IS_BRANCH(I))
+              {
+                ++counts[BRANCH];
+              }
+              else
+              {
+                ++counts[OTHERS];
+              }
             }
           }
+
+          loop_features["instr_counts"] = counts;
+          /* FEATURE 2 (Instruction Counts) EXRACTION END */
+
+          /* FEATURE 3 (Dependency Distance) EXRACTION BEGIN */
+
+          // Dependence *Dep = DI.getDependency(&I);
+          // if (Dep && Dep->isDistance()) {
+          //   errs() << "Memory dependency with distance: " << Dep->getDistance() << "\n";
+          // }
+
+          int intra_loop_dependencies = 0;
+
+          for (llvm::BasicBlock *BB1 : L->blocks()) {
+            for (llvm::Instruction &I1 : *BB1) {
+              for (llvm::BasicBlock *BB2 : L->blocks()) {
+                for (llvm::Instruction &I2 : *BB2) {
+                  auto dependence = depInfo.depends(&I1, &I2, true);	
+                  // errs() << "checking loop independence\n"; //DEBUG
+                  if(dependence && !dependence->isLoopIndependent()){ 
+                    ++intra_loop_dependencies;
+                  }
+                }
+              }
+            }
+          }
+
+          loop_features["intra_loop_dependencies"] = intra_loop_dependencies;
+          
+
+          features.push_back(loop_features);
+          /* FEATURE 3 (Dependency Distance) EXRACTION END */
+
+          
+
         }
 
-        Instruction *I_line = L->getHeader()->getFirstNonPHIOrDbg();
-        if (auto DL = I_line->getDebugLoc())
-        {
-          // Extract the line number from the DebugLoc
-          errs() << DL.getLine();
-        }
-        // Print stats
-        // Print format: LINE_NUM ALUI ALUF LOAD STORE MEM BRANCH OTHERS TOTAL
-        int sum = 0;
-        for (int i = 0; i < counts.size(); i++)
-        {
-          errs() << ", " << format("%.3f", counts[i]);
-          sum += counts[i];
-        }
-        errs() << ", " << sum << "\n";
+        
+
+
       }
+      //   // Print stats
+      //   // Print format: LINE_NUM ALUI ALUF LOAD STORE MEM BRANCH OTHERS TOTAL
+      //   int sum = 0;
+      //   for (int i = 0; i < counts.size(); i++)
+      //   {
+      //     errs() << ", " << format("%.3f", counts[i]);
+      //     sum += counts[i];
+      //   }
+      //   errs() << ", " << sum << "\n";
+      // }
+
+      // PRINT LSON:
+
+      errs() << features.dump(4);
 
       return PreservedAnalyses::all();
     }
@@ -188,6 +287,10 @@ extern "C" ::llvm::PassPluginLibraryInfo LLVM_ATTRIBUTE_WEAK llvmGetPassPluginIn
             {
               if (Name == "featurepass")
               {
+                // FPM.addPass(llvm::createIndVarSimplifyPass());
+                // FPM.addPass<LoopSimplifyPass>();
+                // FPM.addPass(IndVarSimplify());
+                // FPM.addPass(LoopSimplifyPass());
                 FPM.addPass(FeaturePass());
                 return true;
               }
