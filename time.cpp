@@ -1,6 +1,7 @@
 #include <vector>
 #include <cstdint>
 #include <iostream>
+#include <fstream>
 
 #include <unordered_map>
 
@@ -53,5 +54,13 @@ void print_times()
         j[std::to_string(loop_num)] = durations;
     }
 
-    std::cerr << j.dump();
+    // save json to file called "times.json"
+    // Save json to a file called "times.json"
+    std::ofstream file("times.json");
+    if (file.is_open()) {
+        file << j.dump(4); // The '4' here is for pretty printing with an indent of 4 spaces
+        file.close();
+    } else {
+        std::cerr << "Unable to open file";
+    }
 }

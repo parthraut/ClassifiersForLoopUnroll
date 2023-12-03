@@ -88,5 +88,5 @@ def insert_timing_code(filename, loop_unroll_factor):
     # Convert the AST back to C code
     generator = CustomPrint()
     modified_code = generator.visit(ast)
-    return modified_code
+    return modified_code, {}
 

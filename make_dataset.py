@@ -115,9 +115,11 @@ def run_and_aggregate_data(runs):
         process = subprocess.Popen("./output_exe", stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         stdout, stderr = process.communicate()
 
-        # convert stdout to json
-        data = json.loads(stderr)
+        # process saves to "times.json, load it in"
+        with open("times.json", 'r') as file:
+            data = json.load(file)
 
+        print(data)
         """
         compile data into run_data, data looks like this
         {
@@ -137,7 +139,7 @@ def run_and_aggregate_data(runs):
 
 def remove_loops_failed(loops_unrolled_std_out, run_data):
     # TODO:
-    pass
+    return run_data
 
     
 def time_code(filename_path, filename):
@@ -146,7 +148,19 @@ def time_code(filename_path, filename):
     remove_includes(filename_path)
 
     LUFs = [1, 2, 4, 8, 16, 32, 64]
-    runs = 100
+    runs = 1
+
+    all_LUF_times = {}
+
+    """
+    {
+        loop_num : {
+            LUF1 : []
+            LUF2 : []
+        }
+    }
+    
+    """
 
     for LUF in LUFs:
         line2loopnum = insert_timing(filename_path, LUF)
@@ -154,7 +168,19 @@ def time_code(filename_path, filename):
         run_data = run_and_aggregate_data(runs)
 
         # TODO:
-        remove_loops_failed(loops_unrolled_std_out, run_data)
+        run_data = remove_loops_failed(loops_unrolled_std_out, run_data)
+
+        # Aggregate data to all_LUF_times
+        for loop_num, times in run_data.items():
+            if loop_num not in all_LUF_times:
+                all_LUF_times[loop_num] = {}
+            all_LUF_times[loop_num][LUF] = times
+    
+    return all_LUF_times
+
+
+
+
 
 
 
@@ -173,11 +199,17 @@ def generate_dataset():
 
         features = extract_features(filename_path)
         timing_data = time_code(filename_path, filename)
-        # compiled_data = compile_data(filename, features, timing_data)
 
         # load json
+        with open('results.json', 'r') as file:
+            data = json.load(file)
 
-        # append to res json
+        data[filename] = [features, timing_data]
+
+        # store data back to results.json
+        with open('results.json', 'w') as file:
+            json.dump(data, file, indent=4)
+
 
     # compile data and export
 
