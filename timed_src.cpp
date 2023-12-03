@@ -1,4 +1,6 @@
-#include <chrono>
+
+    #include <bits/stdc++.h>
+    #include <chrono>
     #include <cstdint>
     #include <cstdlib>
     extern void add_to_loop(uint64_t, uint64_t);
@@ -8,7 +10,7 @@ int main()
   atexit(print_times);
   int sum = 0;
   auto start_0 = std::chrono::high_resolution_clock::now();
-            #pragma clang loop unroll_count(2)
+            #pragma clang loop unroll_count(1)
   for (int i = 0; i < 100; ++i)
   {
     sum += i;
@@ -24,7 +26,7 @@ int main()
     for (int k = 0; k < 100; ++k)
     {
       auto start_1 = std::chrono::high_resolution_clock::now();
-            #pragma clang loop unroll_count(2)
+            #pragma clang loop unroll_count(1)
       for (int l = 0; l < 100; ++l)
       {
         sum += l;

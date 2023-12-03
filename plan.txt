@@ -62,34 +62,42 @@ features:
  - number of stores
 
 # overall baseline features
-1. number of operands *
 2. live range size
 3. critical path length
-4. number of operations *
-5. loop trip count *
+---------------
+1. number of operands * --> (MIT) number of rhs registers
+4. number of operations ** --> (MIT & HL) instruction count
+5. loop trip count **
 6. number of floating point operations **
-7. loop nest level *
+7. loop nest level **
 8. number of branches **
 9. number of memory operations **
-10. has loop carried Dependencies *
+10. has loop carried Dependencies **
 11. number of loads **
 12. number of stores **
-* 11 and 12 can be added to create 10
+
 
  our features:
+ 1. trip count
+ 2. instruction counts (num alui, aluf, load, store, mem, br, other, total) && operand count && array reads/write/accesses
+ 3. total number of intra-loop carried dependencies && has loop carried dependencies boolean && max intra-loop dependency distance
+ 4. loop nest level
+ 5. resMII (3 different vals - 111, 211, 121)
 
 - 
 - new features:
- - recMII *
- - ResMII * (3 different resource unit combos hardcoded -)
- - distance of Dependencies *
- - number of intra loop dependencies
- - # of array reads
- - # of array writes
- - # of array accesses
- - # of unique arrays accessed
- - Maximum Dependency distance
- - Small Iteration Count Heuristic
+ - recMII (ignore)
+ - distance of Dependencies (ignore)
+ - # of unique arrays accessed (ignore)
+ - Small Iteration Count Heuristic (ignore)
+ ------------------------------------------------------------------
+- ResMII ** (3 different resource unit combos hardcoded - (111), (211), and (121))
+- number of intra loop dependencies **
+- maximum intra-loop dependency distance
+- # of array reads
+- # of array writes
+- # of array accesses
+
 
  if cant figure out recMII and distance dep: *
     - number of loop carried dependencies *

@@ -4,7 +4,7 @@ clang++ -std=c++17 -O3 -Xclang -mllvm -Xclang -unroll-count=4 test.cpp '-o' outp
 
 
 # no unroll
-clang++ -std=c++17 -O3 -Xclang -Rpass=loop-unroll -Xclang -Rpass-missed=loop-unroll test.cpp -o output_exe
+clang++ -std=c++17 -O3 -Xclang -Rpass=loop-unroll -Xclang -Rpass-missed=loop-unroll timed_src.cpp time.cpp -o output_exe
 
 clang++ -std=c++17 -O3 -Xclang -Rpass=loop-unroll -Xclang -Rpass-missed=loop-unroll test_no_nested.cpp -o output_exe
 

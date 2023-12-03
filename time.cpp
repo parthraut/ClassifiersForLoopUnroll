@@ -6,9 +6,12 @@
 
 #include <chrono>
 
+#include <nlohmann/json.hpp>
+
 // time[i] = {} for the ith loop
 std::unordered_map<uint64_t, std::vector<uint64_t>> times;
 
+using json = nlohmann::json;
 /*
 
 x86 instr: RDTSCP/RDTSC
@@ -37,22 +40,18 @@ before loop:
 
 void add_to_loop(uint64_t loop_num, uint64_t duration)
 {
-    std::cout << "Adding to loop " << loop_num << " duration " << duration << "\n";
     times[loop_num].push_back(duration);
 }
 
 // print times
 void print_times()
 {
-    for (auto &[key, vals] : times)
-    {
-        std::cout << "Loop: " << key << " Vals: ";
-        for (auto &val : vals)
-        {
-            std::cout << val << " ";
-        }
-        std::cout << "\n";
-    }
-}
+    json j;
 
-// check online, try to find an online implementation
+    // fill json and dump
+    for(auto& [loop_num, durations] : times){
+        j[std::to_string(loop_num)] = durations;
+    }
+
+    std::cerr << j.dump();
+}

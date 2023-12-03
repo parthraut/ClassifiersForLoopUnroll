@@ -37,14 +37,16 @@ class CustomPrint(c_generator.CGenerator):
 
 # Takes in filename of C program, parses it and inserts timing code, and returns modified C code
 def insert_timing_code(filename, loop_unroll_factor):
-    ast = parse_file(filename, use_cpp=False)
+    ast = parse_file(filename, use_cpp=True)
     visitor = Visitor()
     visitor.visit(ast)
 
     timed_loop_counter = 0
 
     # Insert includes and externs at the top of the file
-    includes_and_directives = f"""#include <chrono>
+    includes_and_directives = f"""
+    #include <bits/stdc++.h>
+    #include <chrono>
     #include <cstdint>
     #include <cstdlib>
     extern void add_to_loop(uint64_t, uint64_t);
