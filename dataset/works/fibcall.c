@@ -26,13 +26,12 @@
 /*                                                                       */
 /*************************************************************************/
 /*                                                                       */
-/*  FILE: insertsort.c                                                   */
+/*  FILE: fibcall.c                                                      */
 /*  SOURCE : Public Domain Code                                          */
 /*                                                                       */
 /*  DESCRIPTION :                                                        */
 /*                                                                       */
-/*     Insertion sort for 10 integer numbers.                            */
-/*     The integer array a[] is initialized in main function.            */
+/*     Summing the Fibonacci series.                                     */
 /*                                                                       */
 /*  REMARK :                                                             */
 /*                                                                       */
@@ -42,47 +41,38 @@
 /*************************************************************************/
 
 #ifdef DEBUG
-int cnt1, cnt2;
-#endif
+	int cnt;
+#endif 
 
+int fib(int n)
+{
+  int  i, Fnew, Fold, temp,ans;
+
+    Fnew = 1;  Fold = 0;
+    i = 2;
+    while( i <= n ) {
+      temp = Fnew;
+      Fnew = Fnew + Fold;
+      Fold = temp;
+      i++;
+#ifdef DEBUG
+	cnt++;
+#endif
+    }
+    ans = Fnew;
+#ifdef DEBUG
+	printf("Loop Count : %d\n", cnt);
+#endif
+  return ans;
+}
+    
 main()
 {
-  int  i,j, temp, a[100000];
-  for (int i = 0; i < 100000; ++i) {
-      a[i] = rand() % 100000;
-  }
+  int a;
 
-//   a[0] = 0;   /* assume all data is positive */
-//   a[1] = 11; a[2]=10;a[3]=9; a[4]=8; a[5]=7; a[6]=6; a[7]=5;
-//   a[8] =4; a[9]=3; a[10]=2;
-  i = 2;
-  while(i <= 100000){
-#ifdef DEBUG
-      cnt1++;
-#endif
-      j = i;
-#ifdef DEBUG
-	cnt2=0;
-#endif
-      while (a[j] < a[j-1]) 
-      {
-#ifdef DEBUG
-	cnt2++;
-#endif
-	temp = a[j];
-	a[j] = a[j-1];
-	a[j-1] = temp;
-	j--;
-      }
-#ifdef DEBUG
-	printf("Inner Loop Counts: %d\n", cnt2);
-#endif
-      i++;
-    }
-#ifdef DEBUG
-    printf("Outer Loop : %d ,  Inner Loop : %d\n", cnt1, cnt2);
-#endif
-
+  a = 1000000000;
+  fib(a);
 }
 
-	
+
+

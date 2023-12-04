@@ -103,7 +103,10 @@
         "hash_set": "cpp",
         "ranges": "cpp",
         "stop_token": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "assert.h": "c",
+        "stdio.h": "c",
+        "inttypes.h": "c"
     },
     "cmake.sourceDirectory": "/home/praut/CompilersFinalProject/llvm-project/bolt/tools/llvm-bolt-fuzzer"
 }

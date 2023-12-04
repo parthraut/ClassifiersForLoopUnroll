@@ -1,0 +1,26 @@
+[
+    {
+        "aluf": 0.0,
+        "alui": 3.0,
+        "array_accesses": 1,
+        "array_reads": 0,
+        "array_writes": 1,
+        "branch": 2.0,
+        "has_inter_loop_carried_dependency": false,
+        "instruction_sum": 13.0,
+        "inter_loop_dependencies": 0,
+        "intra_loop_dependencies": 3,
+        "load": 0.0,
+        "loop_line_number": 52,
+        "loop_nest_level": 1,
+        "max_inter_loop_dependency_distance": 0,
+        "mem": 2.0,
+        "operand_sum": 0,
+        "other": 5.0,
+        "resmii_111": 3,
+        "resmii_121": 3,
+        "resmii_211": 2,
+        "store": 1.0,
+        "trip_count": 99999
+    }
+]

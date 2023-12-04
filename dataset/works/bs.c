@@ -26,13 +26,12 @@
 /*                                                                       */
 /*************************************************************************/
 /*                                                                       */
-/*  FILE: insertsort.c                                                   */
+/*  FILE: bs.c                                                           */
 /*  SOURCE : Public Domain Code                                          */
 /*                                                                       */
 /*  DESCRIPTION :                                                        */
 /*                                                                       */
-/*     Insertion sort for 10 integer numbers.                            */
-/*     The integer array a[] is initialized in main function.            */
+/*     Binary search for the array of 15 integer elements.               */
 /*                                                                       */
 /*  REMARK :                                                             */
 /*                                                                       */
@@ -41,48 +40,86 @@
 /*                                                                       */
 /*************************************************************************/
 
-#ifdef DEBUG
-int cnt1, cnt2;
-#endif
+#include <stdlib.h>
 
-main()
+int binary_search(int x);
+
+
+struct DATA {
+  int  key;
+  int  value;
+}  ;
+
+#ifdef DEBUG
+	int cnt1;
+#endif 
+
+// struct DATA data[15] = { {1, 100},
+// 	     {5,200},
+// 	     {6, 300},
+// 	     {7, 700},
+// 	     {8, 900},
+// 	     {9, 250},
+// 	     {10, 400},
+// 	     {11, 600},
+// 	     {12, 800},
+// 	     {13, 1500},
+// 	     {14, 1200},
+// 	     {15, 110},
+// 	     {16, 140},
+// 	     {17, 133},
+// 	     {18, 10} };
+
+int main(void)
 {
-  int  i,j, temp, a[100000];
-  for (int i = 0; i < 100000; ++i) {
-      a[i] = rand() % 100000;
-  }
-
-//   a[0] = 0;   /* assume all data is positive */
-//   a[1] = 11; a[2]=10;a[3]=9; a[4]=8; a[5]=7; a[6]=6; a[7]=5;
-//   a[8] =4; a[9]=3; a[10]=2;
-  i = 2;
-  while(i <= 100000){
-#ifdef DEBUG
-      cnt1++;
-#endif
-      j = i;
-#ifdef DEBUG
-	cnt2=0;
-#endif
-      while (a[j] < a[j-1]) 
-      {
-#ifdef DEBUG
-	cnt2++;
-#endif
-	temp = a[j];
-	a[j] = a[j-1];
-	a[j-1] = temp;
-	j--;
-      }
-#ifdef DEBUG
-	printf("Inner Loop Counts: %d\n", cnt2);
-#endif
-      i++;
-    }
-#ifdef DEBUG
-    printf("Outer Loop : %d ,  Inner Loop : %d\n", cnt1, cnt2);
-#endif
-
+	binary_search(1000000 / 2);
 }
 
-	
+int binary_search(int x)
+{
+	printf("80");
+	const int arraySize = 1000000;
+    struct DATA data[arraySize];
+
+    for (int i = 0; i < arraySize; ++i) {
+        // You can modify this logic to generate your desired values.
+        data[i].key = i + 1;  // Example: Incremental value for value1
+        data[i].value = rand() % arraySize;  // Example: Incremental value for value2
+    }
+
+  int fvalue, mid, up, low ;
+
+  low = 0;
+  up = arraySize - 1;
+  fvalue = -1 /* all data are positive */ ;
+  while (low <= up) {
+    mid = (low + up) >> 1;
+    if ( data[mid].key == x ) {  /*  found  */
+      up = low - 1;
+      fvalue = data[mid].value;
+#ifdef DEBUG
+	printf("FOUND!!\n");
+#endif
+    }
+    else  /* not found */
+      if ( data[mid].key > x ) 	{
+	up = mid - 1;
+#ifdef DEBUG
+	printf("MID-1\n");
+#endif
+      }
+      else   {
+             	low = mid + 1;
+#ifdef DEBUG
+	printf("MID+1\n");
+#endif
+      }
+#ifdef DEBUG
+	cnt1++;
+#endif
+  }
+#ifdef DEBUG
+	printf("Loop Count : %d\n", cnt1);
+#endif
+  return fvalue;
+}

@@ -27,6 +27,8 @@
 #include <optional>
 #include <cmath>
 
+#include <fstream>
+
 // NOTE, must add path -I/home/praut/CompilersFinalProject/external/json/include before compiling
 #include <nlohmann/json.hpp>
 using json = nlohmann::json;
@@ -395,8 +397,13 @@ namespace
       // }
 
       // PRINT LSON:
-
-      errs() << features.dump(4);
+      std::ofstream file("features.json");
+      if (file.is_open()) {
+        file << features.dump(4); // The '4' here is for pretty printing with an indent of 4 spaces
+            file.close();
+        } else {
+            std::cerr << "Unable to open file";
+        }
 
       return PreservedAnalyses::all();
     }

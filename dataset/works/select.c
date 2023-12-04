@@ -26,13 +26,15 @@
 /*                                                                       */
 /*************************************************************************/
 /*                                                                       */
-/*  FILE: insertsort.c                                                   */
-/*  SOURCE : Public Domain Code                                          */
+/*  FILE: select.c                                                       */
+/*  SOURCE : Numerical Recipes in C - The Second Edition                 */
 /*                                                                       */
 /*  DESCRIPTION :                                                        */
 /*                                                                       */
-/*     Insertion sort for 10 integer numbers.                            */
-/*     The integer array a[] is initialized in main function.            */
+/*     A function to select the Nth largest number in the floating poi-  */
+/*     nt array arr[].                                                   */
+/*     The parameters to function select are k and n. Then the function  */
+/*     selects k-th largest number out of n original numbers.            */
 /*                                                                       */
 /*  REMARK :                                                             */
 /*                                                                       */
@@ -41,48 +43,80 @@
 /*                                                                       */
 /*************************************************************************/
 
-#ifdef DEBUG
-int cnt1, cnt2;
-#endif
+
+// #include <stdio.h>
+// #include <stdlib.h>
+
+
+#define SWAP(a,b) temp=(a);(a)=(b);(b)=temp;
+#define USE_MY_FUNCTION  // Uncomment to use your function
+#define SIZE 100000000
+
+// float arr[20] = {
+//   5, 4, 10.3, 1.1, 5.7, 100, 231, 111, 49.5, 99,
+//   10, 150, 222.22, 101, 77, 44, 35, 20.54, 99.99, 888.88
+// };
+float arr[SIZE];
+
+float select(unsigned long k, unsigned long n)
+{
+	unsigned long i,ir,j,l,mid;
+	float a,temp;
+	int flag, flag2;
+
+	l=1;
+	ir=n;
+	flag = flag2 = 0; 
+	while (!flag) {
+		if (ir <= l+1) {
+			if (ir == l+1) 
+			  if (arr[ir] < arr[l]) {
+			    SWAP(arr[l],arr[ir])
+			      }
+			flag = 1;
+		} else if (!flag) {
+			mid=(l+ir) >> 1;
+			SWAP(arr[mid],arr[l+1])
+			if (arr[l+1] > arr[ir]) {
+				SWAP(arr[l+1],arr[ir])
+			}
+			if (arr[l] > arr[ir]) {
+				SWAP(arr[l],arr[ir])
+			}
+			if (arr[l+1]> arr[l]) {
+				SWAP(arr[l+1],arr[l])
+			}
+			i=l+1;
+			j=ir;
+			a=arr[l];
+			while (!flag2) {
+				i++; 
+				while (arr[i] < a) i++;
+				j--; 
+				while (arr[j] > a) j--;
+				if (j < i) flag2 = 1;
+				if (!flag2) SWAP(arr[i],arr[j]);
+				
+			}
+			arr[l]=arr[j];
+			arr[j]=a;
+			if (j >= k) ir=j-1;
+			if (j <= k) l=i;
+		}
+
+	}
+	return arr[k];
+}
+
+float getRandomFloat() {
+    return ((float)rand() * 0.00005);
+}
 
 main()
 {
-  int  i,j, temp, a[100000];
-  for (int i = 0; i < 100000; ++i) {
-      a[i] = rand() % 100000;
-  }
-
-//   a[0] = 0;   /* assume all data is positive */
-//   a[1] = 11; a[2]=10;a[3]=9; a[4]=8; a[5]=7; a[6]=6; a[7]=5;
-//   a[8] =4; a[9]=3; a[10]=2;
-  i = 2;
-  while(i <= 100000){
-#ifdef DEBUG
-      cnt1++;
-#endif
-      j = i;
-#ifdef DEBUG
-	cnt2=0;
-#endif
-      while (a[j] < a[j-1]) 
-      {
-#ifdef DEBUG
-	cnt2++;
-#endif
-	temp = a[j];
-	a[j] = a[j-1];
-	a[j-1] = temp;
-	j--;
-      }
-#ifdef DEBUG
-	printf("Inner Loop Counts: %d\n", cnt2);
-#endif
-      i++;
-    }
-#ifdef DEBUG
-    printf("Outer Loop : %d ,  Inner Loop : %d\n", cnt1, cnt2);
-#endif
-
+	for (int i = 0; i < SIZE; i++) {
+		arr[i] = getRandomFloat();
+	}
+  select(SIZE / 2, SIZE);
 }
 
-	

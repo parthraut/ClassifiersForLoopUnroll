@@ -7,12 +7,22 @@ import os
 import re
 from insert_timing_code import insert_timing_code
 
+# Exceptions 
+class CompileException(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
+class RuntimeException(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+
+
 def extract_features(filename_path):
     """ Returns compiled json of features for each loop in file. """
 
     # compile original test to test.ll
     compile_command = [
-                    "clang++",
+                    "clang",
                     "-g",
                     "-emit-llvm",
                     "-S",
@@ -25,6 +35,12 @@ def extract_features(filename_path):
 
     # will throw if compilation fails
     process = subprocess.Popen(compile_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    stdout, stderr = process.communicate()
+
+    if process.returncode != 0:
+        raise CompileException(stderr)
+
+    
 
     # run pass, returns json in stdout
     run_opt_command = ['opt',
@@ -36,6 +52,9 @@ def extract_features(filename_path):
     # will throw if opt fails
     process = subprocess.Popen(run_opt_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     stdout, stderr = process.communicate()
+
+    if process.returncode != 0:
+        raise RuntimeException("opt error" + stderr)
 
     """
      stdout is json, convert it to json object and return
@@ -51,8 +70,9 @@ def extract_features(filename_path):
     ]
 
     """
-    print(stderr)
-    data = json.loads(stderr)
+    # load from features.json
+    with open("features.json", 'r') as file:
+        data = json.load(file)
 
     return data
 
@@ -66,13 +86,14 @@ def remove_includes(filename_path):
 
     # Use regex to remove all lines that start with #include
     modified_content = re.sub(r'^#include.*$', '', content, flags=re.MULTILINE)
+    # modified_content = content
 
     # Write the modified content to a new file named preprop.cpp
     with open('preprop.cpp', 'w') as new_file:
         new_file.write(modified_content)
 
 def insert_timing(filename_path, LUF):
-    modified_code, line2loopnum = insert_timing_code(filename_path, LUF)
+    modified_code, line2loopnum = insert_timing_code("preprop.cpp", LUF)
 
     # output modified code to timed.cpp
     with open('timed_src.cpp', 'w') as timed_file:
@@ -92,8 +113,8 @@ def compile_and_link():
             "-L/usr/lib/gcc/x86_64-linux-gnu/11",
             "-std=c++17",
             "-O3",
-            "-Xclang", "Rpass=loop-unroll",
-            "-Xclang", "Rpass-missed=loop-unroll",
+            "-Xclang", "-Rpass=loop-unroll",
+            "-Xclang", "-Rpass-missed=loop-unroll",
             "timed_src.cpp",
             "time.cpp",
             "-o", "output_exe"
@@ -102,7 +123,10 @@ def compile_and_link():
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     stdout, stderr = process.communicate()
 
-    print(stdout)
+    if process.returncode != 0:
+        raise CompileException(stderr)
+
+
 
     return stdout
 
@@ -119,7 +143,6 @@ def run_and_aggregate_data(runs):
         with open("times.json", 'r') as file:
             data = json.load(file)
 
-        print(data)
         """
         compile data into run_data, data looks like this
         {
@@ -163,18 +186,29 @@ def time_code(filename_path, filename):
     """
 
     for LUF in LUFs:
-        line2loopnum = insert_timing(filename_path, LUF)
-        loops_unrolled_std_out = compile_and_link()
-        run_data = run_and_aggregate_data(runs)
+        try:
+            line2loopnum = insert_timing(filename_path, LUF)
+            loops_unrolled_std_out = compile_and_link()
+            run_data = run_and_aggregate_data(runs)
 
-        # TODO:
-        run_data = remove_loops_failed(loops_unrolled_std_out, run_data)
+            # TODO:
+            run_data = remove_loops_failed(loops_unrolled_std_out, run_data)
+        
+        except CompileException as ce:
+            print(ce)
+            continue
+        except RuntimeException as re:
+            print(re)
+            continue
+        except Exception as e:
+            print(e)
+            continue
 
         # Aggregate data to all_LUF_times
         for loop_num, times in run_data.items():
             if loop_num not in all_LUF_times:
                 all_LUF_times[loop_num] = {}
-            all_LUF_times[loop_num][LUF] = times
+            all_LUF_times[loop_num][LUF] = sum(times) / len(times)
     
     return all_LUF_times
 
@@ -191,18 +225,31 @@ def time_code(filename_path, filename):
 def generate_dataset():
     """ Generates Dataset from scratch. """
 
-    pdb.set_trace()
+    
+    # load json
+    rerun = True
 
-    for filename in os.listdir("dataset"):
+    with open('results.json', 'r') as file:
+        data = json.load(file)
 
-        filename_path = os.path.join("dataset", filename)
+    for filename in os.listdir("dataset/works/"):
 
+        if not filename.endswith(".c"):
+            print(f"{filename} not a c file, skipping")
+            continue
+
+        if filename in data:
+            if not rerun:
+                print(f"{filename} filename has data and rerun not enabled, skipping")
+                continue
+
+        filename_path = os.path.join("dataset/works", filename)
+
+        print(f"---------- {filename} : extracting features ---------")
         features = extract_features(filename_path)
-        timing_data = time_code(filename_path, filename)
 
-        # load json
-        with open('results.json', 'r') as file:
-            data = json.load(file)
+        print(f"---------- {filename} : timing data ---------")
+        timing_data = time_code(filename_path, filename)
 
         data[filename] = [features, timing_data]
 
