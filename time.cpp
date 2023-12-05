@@ -38,6 +38,11 @@ for every nested loop that is not innermost, add
 before loop:
 #pragma clang loop unroll_count(1)
 */
+void init_loops(int loop_num){
+    for(int i = 0; i < loop_num; ++i){
+        times[i];
+    }
+}
 
 void add_to_loop(uint64_t loop_num, uint64_t duration)
 {

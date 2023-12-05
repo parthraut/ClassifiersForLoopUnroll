@@ -211,7 +211,10 @@ def time_code(filename_path, filename):
         for loop_num, times in run_data.items():
             if loop_num not in all_LUF_times:
                 all_LUF_times[loop_num] = {}
-            all_LUF_times[loop_num][LUF] = sum(times) / len(times)
+            if len(times) != 0:
+                all_LUF_times[loop_num][LUF] = sum(times) / len(times)
+            else:
+                all_LUF_times[loop_num][LUF] = -1
     
     return all_LUF_times
 

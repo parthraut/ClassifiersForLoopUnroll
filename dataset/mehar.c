@@ -30,6 +30,11 @@ int main() {
             v[i-1] += mehar;
         }
         mehar_deep_singh(v);
+
+
+        for(int mehar = 1; mehar < 500; ++mehar){
+            v[mehar] = v[mehar-1] + MEHAR_IS_SUPER_COOL;
+        }
     }
 
     return 0;

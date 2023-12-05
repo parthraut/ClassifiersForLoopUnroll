@@ -4,7 +4,8 @@
     #include <cstdint>
     #include <cstdlib>
     extern void add_to_loop(uint64_t, uint64_t);
-    extern void print_times();;
+    extern void print_times();
+    extern void init_loops(int);;
 void mehar_deep_singh(int *mehar_is_cool)
 {
   auto start_0 = std::chrono::high_resolution_clock::now();
@@ -22,6 +23,7 @@ void mehar_deep_singh(int *mehar_is_cool)
 int main()
 {
   atexit(print_times);
+  init_loops(5);
   int v[1000];
   #pragma clang loop unroll(disable)
   for (int i = 1; i < 1000; i++)
@@ -61,7 +63,16 @@ int main()
     auto end_3 = std::chrono::high_resolution_clock::now();
             auto duration_3 = std::chrono::duration_cast<std::chrono::nanoseconds>(end_3 - start_3);
             add_to_loop(3, duration_3.count());
-    mehar_deep_singh(v);
+    auto start_4 = std::chrono::high_resolution_clock::now();
+            #pragma clang loop unroll_count(64)
+    for (int mehar = 1; mehar < 500; ++mehar)
+    {
+      v[mehar] = v[mehar - 1] + 69;
+    }
+
+    auto end_4 = std::chrono::high_resolution_clock::now();
+            auto duration_4 = std::chrono::duration_cast<std::chrono::nanoseconds>(end_4 - start_4);
+            add_to_loop(4, duration_4.count());
   }
 
   return 0;

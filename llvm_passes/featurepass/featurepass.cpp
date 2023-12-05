@@ -219,7 +219,7 @@ namespace
 
     vector<float> getDependencyInfo(Loop *L, DependenceInfo &depInfo)
     {
-      vector<float> dependencyInfo(12, 0.0);
+      vector<float> dependencyInfo(16, 0.0);
 
       int max_inter_loop_dependency_distance = 0;
       int max_inter_loop_dependency_distance_flow = 0;
@@ -230,6 +230,11 @@ namespace
       int inter_loop_dependencies_flow = 0;
       int inter_loop_dependencies_anti = 0;
       int inter_loop_dependencies_output = 0;
+
+      int max_intra_loop_dependency_distance = 0;
+      int max_intra_loop_dependency_distance_flow = 0;
+      int max_intra_loop_dependency_distance_anti = 0;
+      int max_intra_loop_dependency_distance_output = 0;
 
       int intra_loop_dependencies = 0;
       int intra_loop_dependencies_flow = 0;
@@ -256,17 +261,17 @@ namespace
                     const APInt &intValue = constSCEV->getAPInt();
                     int int_signed_distance = intValue.getSExtValue();
                     int int_distance = abs(int_signed_distance);
+                    
                     max_inter_loop_dependency_distance = max_inter_loop_dependency_distance > int_distance ? max_inter_loop_dependency_distance : int_distance;
-
-                    if (dependence.isFlow())
+                    if (dependence->isFlow())
                     {
                       max_inter_loop_dependency_distance_flow = max_inter_loop_dependency_distance_flow > int_distance ? max_inter_loop_dependency_distance_flow : int_distance;
                     }
-                    else if (dependence.isAnti())
+                    else if (dependence->isAnti())
                     {
                       max_inter_loop_dependency_distance_anti = max_inter_loop_dependency_distance_anti > int_distance ? max_inter_loop_dependency_distance_anti : int_distance;
                     }
-                    else if (dependence.isOutput())
+                    else if (dependence->isOutput())
                     {
                       max_inter_loop_dependency_distance_output = max_inter_loop_dependency_distance_output > int_distance ? max_inter_loop_dependency_distance_output : int_distance;
                     }
@@ -275,31 +280,56 @@ namespace
 
                 ++inter_loop_dependencies;
 
-                if (dependence.isFlow())
+                if (dependence->isFlow())
                 {
                   ++inter_loop_dependencies_flow;
                 }
-                else if (dependence.isAnti())
+                else if (dependence->isAnti())
                 {
                   ++inter_loop_dependencies_anti;
                 }
-                else if (dependence.isOutput())
+                else if (dependence->isOutput())
                 {
                   ++inter_loop_dependencies_output;
                 }
               }
               else if (dependence && dependence->isLoopIndependent())
               {
+                const SCEV *scev_distance = dependence->getDistance(L->getLoopDepth());
+                if (scev_distance)
+                {
+                  if (const SCEVConstant *constSCEV = dyn_cast<SCEVConstant>(scev_distance))
+                  {
+                    const APInt &intValue = constSCEV->getAPInt();
+                    int int_signed_distance = intValue.getSExtValue();
+                    int int_distance = abs(int_signed_distance);
+                    
+                    max_intra_loop_dependency_distance = max_intra_loop_dependency_distance > int_distance ? max_intra_loop_dependency_distance : int_distance;
+                    if (dependence->isFlow())
+                    {
+                      max_intra_loop_dependency_distance_flow = max_intra_loop_dependency_distance_flow > int_distance ? max_intra_loop_dependency_distance_flow : int_distance;
+                    }
+                    else if (dependence->isAnti())
+                    {
+                      max_intra_loop_dependency_distance_anti = max_intra_loop_dependency_distance_anti > int_distance ? max_intra_loop_dependency_distance_anti : int_distance;
+                    }
+                    else if (dependence->isOutput())
+                    {
+                      max_intra_loop_dependency_distance_output = max_intra_loop_dependency_distance_output > int_distance ? max_intra_loop_dependency_distance_output : int_distance;
+                    }
+                  }
+                }
+
                 ++intra_loop_dependencies;
-                if (dependence.isFlow())
+                if (dependence->isFlow())
                 {
                   ++intra_loop_dependencies_flow;
                 }
-                else if (dependence.isAnti())
+                else if (dependence->isAnti())
                 {
                   ++intra_loop_dependencies_anti;
                 }
-                else if (dependence.isOutput())
+                else if (dependence->isOutput())
                 {
                   ++intra_loop_dependencies_output;
                 }
@@ -319,10 +349,15 @@ namespace
       dependencyInfo[6] = inter_loop_dependencies_anti;
       dependencyInfo[7] = inter_loop_dependencies_output;
 
-      dependencyInfo[8] = intra_loop_dependencies;
-      dependencyInfo[9] = intra_loop_dependencies_flow;
-      dependencyInfo[10] = intra_loop_dependencies_anti;
-      dependencyInfo[11] = intra_loop_dependencies_output;
+      dependencyInfo[8] = max_intra_loop_dependency_distance;
+      dependencyInfo[9] = max_intra_loop_dependency_distance_flow;
+      dependencyInfo[10] = max_intra_loop_dependency_distance_anti;
+      dependencyInfo[11] = max_intra_loop_dependency_distance_output;
+
+      dependencyInfo[12] = intra_loop_dependencies;
+      dependencyInfo[13] = intra_loop_dependencies_flow;
+      dependencyInfo[14] = intra_loop_dependencies_anti;
+      dependencyInfo[15] = intra_loop_dependencies_output;
 
       return dependencyInfo;
     }
@@ -392,19 +427,21 @@ namespace
         loop_features["max_inter_loop_dependency_distance"] = dependency_info[0];
         loop_features["max_inter_loop_dependency_distance_flow"] = dependency_info[1];
         loop_features["max_inter_loop_dependency_distance_anti"] = dependency_info[2];
-        loop_features["max_inter_loop_dependency_distance"] = dependency_info[3];
+        loop_features["max_inter_loop_dependency_distance_output"] = dependency_info[3];
         loop_features["inter_loop_dependencies"] = dependency_info[4];
         loop_features["inter_loop_dependencies_flow"] = dependency_info[5];
         loop_features["inter_loop_dependencies_anti"] = dependency_info[6];
         loop_features["inter_loop_dependencies_output"] = dependency_info[7];
-
-        loop_features["intra_loop_dependencies"] = dependency_info[8];
-        loop_features["intra_loop_dependencies_flow"] = dependency_info[9];
-        loop_features["intra_loop_dependencies_anti"] = dependency_info[10];
-        loop_features["intra_loop_dependencies_output"] = dependency_info[11];
+        loop_features["max_intra_loop_dependency_distance"] = dependency_info[8];
+        loop_features["max_intra_loop_dependency_distance_flow"] = dependency_info[9];
+        loop_features["max_intra_loop_dependency_distance_anti"] = dependency_info[10];
+        loop_features["max_intra_loop_dependency_distance_output"] = dependency_info[11];
+        loop_features["intra_loop_dependencies"] = dependency_info[12];
+        loop_features["intra_loop_dependencies_flow"] = dependency_info[13];
+        loop_features["intra_loop_dependencies_anti"] = dependency_info[14];
+        loop_features["intra_loop_dependencies_output"] = dependency_info[15];
 
         loop_features["has_inter_loop_carried_dependency"] = dependency_info[1] > 0;
-
         loop_features["loop_nest_level"] = loop_nest_level;
 
         loop_features["resmii_111"] = res_mii_estimates[0];

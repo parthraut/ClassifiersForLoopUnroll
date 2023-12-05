@@ -29,7 +29,12 @@ int main() {
         for(int mehar = 0; mehar < 384; ++mehar){
             v[i-1] += mehar;
         }
-        mehar_deep_singh(v);
+        // mehar_deep_singh(v);
+
+
+        for(int mehar = 1; mehar < 500; ++mehar){
+            v[mehar] = v[mehar-1] + MEHAR_IS_SUPER_COOL;
+        }
     }
 
     return 0;
