@@ -24,7 +24,7 @@
  */
 void bubble_sort(int *array_sort)
 {
-    int is_sorted = false;
+    int is_sorted = 0;
 
     /* keep iterating over entire array
      * and swaping elements out of order

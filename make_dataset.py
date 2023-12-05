@@ -40,7 +40,9 @@ def extract_features(filename_path):
     if process.returncode != 0:
         raise CompileException(stderr)
 
-    
+    # initializes features.json
+    with open("features.json", 'w') as f:
+        f.write("[]")
 
     # run pass, returns json in stdout
     run_opt_command = ['opt',
@@ -70,6 +72,7 @@ def extract_features(filename_path):
     ]
 
     """
+    
     # load from features.json
     with open("features.json", 'r') as file:
         data = json.load(file)
@@ -232,7 +235,7 @@ def generate_dataset():
     with open('results.json', 'r') as file:
         data = json.load(file)
 
-    for filename in os.listdir("dataset/works/"):
+    for filename in os.listdir("dataset"):
 
         if not filename.endswith(".c"):
             print(f"{filename} not a c file, skipping")
@@ -243,7 +246,7 @@ def generate_dataset():
                 print(f"{filename} filename has data and rerun not enabled, skipping")
                 continue
 
-        filename_path = os.path.join("dataset/works", filename)
+        filename_path = os.path.join("dataset", filename)
 
         print(f"---------- {filename} : extracting features ---------")
         features = extract_features(filename_path)

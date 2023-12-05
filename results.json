@@ -1,1650 +1,211 @@
 {
-    "select.c": [
-        [
-            {
-                "aluf": 0.0,
-                "alui": 2.0,
-                "array_accesses": 1,
-                "array_reads": 0,
-                "array_writes": 1,
-                "branch": 2.0,
-                "has_inter_loop_carried_dependency": false,
-                "instruction_sum": 12.0,
-                "inter_loop_dependencies": 0,
-                "intra_loop_dependencies": 3,
-                "load": 0.0,
-                "loop_line_number": 118,
-                "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 0,
-                "mem": 2.0,
-                "operand_sum": 0,
-                "other": 5.0,
-                "resmii_111": 2,
-                "resmii_121": 2,
-                "resmii_211": 2,
-                "store": 1.0,
-                "trip_count": 99999999
-            }
-        ],
-        {
-            "0": {
-                "1": 17.300020257581103,
-                "2": 17.066394460385705,
-                "4": 17.322325522645592,
-                "8": 17.123506420461588,
-                "16": 17.03010300384179,
-                "32": 17.022284530834423,
-                "64": 17.342181407830388
-            },
-            "1": {
-                "1": 29.802030762924336,
-                "2": 30.871463026339622,
-                "4": 28.47651824612246,
-                "8": 28.708928350127266,
-                "16": 28.877571997826482,
-                "32": 29.768544743038543,
-                "64": 29.932590038989886
-            },
-            "2": {
-                "1": 1700909161.0,
-                "2": 1598725623.0,
-                "4": 1558572610.0,
-                "8": 1551533684.0,
-                "16": 1538534696.0,
-                "32": 1531406883.0,
-                "64": 1511771812.0
-            }
-        }
-    ],
-    "lcs.c": [
-        [
-            {
-                "aluf": 0.0,
-                "alui": 2.0,
-                "array_accesses": 0,
-                "array_reads": 0,
-                "array_writes": 0,
-                "branch": 2.0,
-                "has_inter_loop_carried_dependency": false,
-                "instruction_sum": 19.0,
-                "inter_loop_dependencies": 0,
-                "intra_loop_dependencies": 12,
-                "load": 2.0,
-                "loop_line_number": 162,
-                "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 0,
-                "mem": 4.0,
-                "operand_sum": 0,
-                "other": 9.0,
-                "resmii_111": 4,
-                "resmii_121": 2,
-                "resmii_211": 4,
-                "store": 0.0,
-                "trip_count": -1
-            },
-            {
-                "aluf": 0.0,
-                "alui": 10.0,
-                "array_accesses": 0,
-                "array_reads": 0,
-                "array_writes": 0,
-                "branch": 4.0,
-                "has_inter_loop_carried_dependency": false,
-                "instruction_sum": 37.0,
-                "inter_loop_dependencies": 0,
-                "intra_loop_dependencies": 26,
-                "load": 2.0,
-                "loop_line_number": 137,
-                "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 0,
-                "mem": 8.0,
-                "operand_sum": 0,
-                "other": 11.0,
-                "resmii_111": 10,
-                "resmii_121": 10,
-                "resmii_211": 8,
-                "store": 2.0,
-                "trip_count": -1
-            },
-            {
-                "aluf": 0.0,
-                "alui": 3.0,
-                "array_accesses": 3,
-                "array_reads": 1,
-                "array_writes": 2,
-                "branch": 2.0,
-                "has_inter_loop_carried_dependency": true,
-                "instruction_sum": 22.0,
-                "inter_loop_dependencies": 1,
-                "intra_loop_dependencies": 7,
-                "load": 1.0,
-                "loop_line_number": 117,
-                "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 0,
-                "mem": 6.0,
-                "operand_sum": 0,
-                "other": 8.0,
-                "resmii_111": 6,
-                "resmii_121": 3,
-                "resmii_211": 6,
-                "store": 2.0,
-                "trip_count": 9999
-            }
-        ],
-        {
-            "0": {
-                "1": 41119.3257,
-                "2": 37847.6052,
-                "4": 36408.1368,
-                "8": 34331.8707,
-                "16": 33892.9241,
-                "32": 34199.542,
-                "64": 34305.18059164501
-            },
-            "1": {
-                "1": 563393.0,
-                "2": 568950.0,
-                "4": 563873.0,
-                "8": 564213.0,
-                "16": 559807.0,
-                "32": 563914.0,
-                "64": 580704.0
-            },
-            "2": {
-                "1": 174204.0,
-                "2": 243213.0,
-                "4": 167937.0,
-                "8": 258781.0,
-                "16": 501422.0,
-                "32": 167750.0,
-                "64": 166772.0
-            },
-            "3": {
-                "1": 527248346.0,
-                "2": 531115781.0,
-                "4": 515920150.0,
-                "8": 498544088.0,
-                "16": 496540887.0,
-                "32": 518351897.0,
-                "64": 516971552.0
-            },
-            "4": {
-                "1": 2441625.0,
-                "2": 2460347.0,
-                "4": 2449806.0,
-                "8": 2446577.0,
-                "16": 2447281.0,
-                "32": 2445206.0,
-                "64": 2567001.0
-            }
-        }
-    ],
-    "simpsons_1_3rd_rule.c": [
-        [
-            {
-                "aluf": 0.0,
-                "alui": 2.0,
-                "array_accesses": 0,
-                "array_reads": 0,
-                "array_writes": 0,
-                "branch": 2.0,
-                "has_inter_loop_carried_dependency": false,
-                "instruction_sum": 13.0,
-                "inter_loop_dependencies": 0,
-                "intra_loop_dependencies": 1,
-                "load": 0.0,
-                "loop_line_number": 37,
-                "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 0,
-                "mem": 0.0,
-                "operand_sum": 0,
-                "other": 9.0,
-                "resmii_111": 2,
-                "resmii_121": 2,
-                "resmii_211": 2,
-                "store": 0.0,
-                "trip_count": 3333332
-            },
-            {
-                "aluf": 3.0,
-                "alui": 2.0,
-                "array_accesses": 0,
-                "array_reads": 0,
-                "array_writes": 0,
-                "branch": 2.0,
-                "has_inter_loop_carried_dependency": false,
-                "instruction_sum": 19.0,
-                "inter_loop_dependencies": 0,
-                "intra_loop_dependencies": 4,
-                "load": 0.0,
-                "loop_line_number": 31,
-                "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 0,
-                "mem": 0.0,
-                "operand_sum": 0,
-                "other": 12.0,
-                "resmii_111": 5,
-                "resmii_121": 5,
-                "resmii_211": 3,
-                "store": 0.0,
-                "trip_count": 3333332
-            }
-        ],
-        {
-            "0": {
-                "1": 110.0,
-                "2": 107.0,
-                "4": 94.0,
-                "8": 164.0,
-                "16": 156.0,
-                "32": 130.0,
-                "64": 477.0
-            },
-            "1": {
-                "1": 32.0,
-                "2": 35.0,
-                "4": 32.0,
-                "8": 48.0,
-                "16": 46.0,
-                "32": 49.0,
-                "64": 130.0
-            }
-        }
-    ],
-    "sqrt.c": [
-        null,
-        {
-            "0": {
-                "1": 89.0,
-                "2": 2691.0,
-                "4": 1207.0,
-                "8": 1262.0,
-                "16": 1222.0,
-                "32": 1164.0,
-                "64": 3657.0
-            }
-        }
-    ],
-    "matmul.c": [
-        null,
-        {
-            "0": {
-                "1": 40585.494,
-                "2": 38932.441,
-                "4": 38393.457,
-                "8": 30490.019,
-                "16": 30895.773,
-                "32": 39499.413,
-                "64": 39229.937
-            }
-        }
-    ],
-    "hash_xor8.c": [
-        null,
-        {
-            "0": {
-                "1": 39.0,
-                "2": 42.0,
-                "4": 47.0,
-                "8": 344253.0,
-                "16": 285937.0,
-                "32": 328409.0,
-                "64": 337630.0
-            },
-            "1": {
-                "1": 19982156.0,
-                "2": 20579592.0,
-                "4": 19512965.0,
-                "8": 21828914.0,
-                "16": 16098968.0,
-                "32": 20687825.0,
-                "64": 21309495.0
-            }
-        }
-    ],
     "rot13.c": [
         [
             {
                 "aluf": 0.0,
+                "alui": 12.0,
+                "array_accesses": 0.0,
+                "array_reads": 0.0,
+                "array_writes": 0.0,
+                "branch": 9.0,
+                "has_inter_loop_carried_dependency": true,
+                "instruction_sum": 67.0,
+                "inter_loop_dependencies": 9.0,
+                "intra_loop_dependencies": 72.0,
+                "load": 7.0,
+                "loop_line_number": 26,
+                "loop_nest_level": 1,
+                "max_inter_loop_dependency_distance": 0.0,
+                "mem": 18.0,
+                "operand_sum": 0.0,
+                "other": 19.0,
+                "resmii_111": 12,
+                "resmii_121": 12,
+                "resmii_211": 9,
+                "store": 2.0,
+                "trip_count": -1
+            },
+            {
+                "aluf": 0.0,
                 "alui": 3.0,
-                "array_accesses": 2,
-                "array_reads": 1,
-                "array_writes": 1,
+                "array_accesses": 2.0,
+                "array_reads": 1.0,
+                "array_writes": 1.0,
                 "branch": 2.0,
                 "has_inter_loop_carried_dependency": true,
                 "instruction_sum": 18.0,
-                "inter_loop_dependencies": 1,
-                "intra_loop_dependencies": 5,
+                "inter_loop_dependencies": 1.0,
+                "intra_loop_dependencies": 5.0,
                 "load": 1.0,
                 "loop_line_number": 44,
                 "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 0,
+                "max_inter_loop_dependency_distance": 0.0,
                 "mem": 4.0,
-                "operand_sum": 0,
+                "operand_sum": 0.0,
                 "other": 7.0,
-                "resmii_111": 4,
+                "resmii_111": 3,
                 "resmii_121": 3,
-                "resmii_211": 4,
+                "resmii_211": 2,
                 "store": 1.0,
                 "trip_count": 999999
             }
         ],
         {
             "0": {
-                "1": 6457463.0,
-                "2": 5045194.0,
-                "4": 5131466.0,
-                "8": 5219320.0,
-                "16": 4993829.0,
-                "32": 5282982.0,
-                "64": 5598439.0
+                "1": 5728968.0,
+                "2": 5401718.0,
+                "4": 5165767.0,
+                "8": 5250477.0,
+                "16": 5218088.0,
+                "32": 5337805.0,
+                "64": 6619829.0
             },
             "1": {
-                "1": 20871708.0,
-                "2": 15278620.0,
-                "4": 17312761.0,
-                "8": 16103492.0,
-                "16": 15241553.0,
-                "32": 16092618.0,
-                "64": 15340277.0
+                "1": 16145557.0,
+                "2": 16125113.0,
+                "4": 16139690.0,
+                "8": 16107829.0,
+                "16": 15712576.0,
+                "32": 16109090.0,
+                "64": 21263082.0
             }
         }
     ],
-    "hash_sdbm.c": [
-        null,
-        {
-            "0": {
-                "1": 53.0,
-                "2": 34.0,
-                "4": 53.0,
-                "8": 1142923.0,
-                "16": 1148820.0,
-                "32": 1093590.0,
-                "64": 1290831.0
-            },
-            "1": {
-                "1": 20285161.0,
-                "2": 15206987.0,
-                "4": 20150600.0,
-                "8": 16006812.0,
-                "16": 17198534.0,
-                "32": 15459657.0,
-                "64": 20544942.0
-            }
-        }
-    ],
-    "fibonacci_search.c": [
+    "mehar.c": [
         [
             {
                 "aluf": 0.0,
                 "alui": 3.0,
-                "array_accesses": 1,
-                "array_reads": 0,
-                "array_writes": 1,
-                "branch": 2.0,
-                "has_inter_loop_carried_dependency": false,
-                "instruction_sum": 13.0,
-                "inter_loop_dependencies": 0,
-                "intra_loop_dependencies": 3,
-                "load": 0.0,
-                "loop_line_number": 72,
-                "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 0,
-                "mem": 2.0,
-                "operand_sum": 0,
-                "other": 5.0,
-                "resmii_111": 3,
-                "resmii_121": 3,
-                "resmii_211": 2,
-                "store": 1.0,
-                "trip_count": 499999
-            }
-        ],
-        {
-            "0": {
-                "1": 92.0,
-                "2": 64.0,
-                "4": 86.0,
-                "8": 87.0,
-                "16": 123.0,
-                "32": 94.0,
-                "64": 96.0
-            },
-            "1": {
-                "1": 106.0,
-                "2": 122.0,
-                "4": 233.0,
-                "8": 361.0,
-                "16": 528.0,
-                "32": 484.0,
-                "64": 430.0
-            },
-            "2": {
-                "1": 10797020.0,
-                "2": 8042445.0,
-                "4": 10756814.0,
-                "8": 10938928.0,
-                "16": 10799084.0,
-                "32": 11204965.0,
-                "64": 10790070.0
-            }
-        }
-    ],
-    "collatz.c": [
-        [
-            {
-                "aluf": 0.0,
-                "alui": 7.0,
-                "array_accesses": 0,
-                "array_reads": 0,
-                "array_writes": 0,
-                "branch": 4.0,
-                "has_inter_loop_carried_dependency": false,
-                "instruction_sum": 22.0,
-                "inter_loop_dependencies": 0,
-                "intra_loop_dependencies": 1,
-                "load": 0.0,
-                "loop_line_number": 24,
-                "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 0,
-                "mem": 0.0,
-                "operand_sum": 0,
-                "other": 11.0,
-                "resmii_111": 7,
-                "resmii_121": 7,
-                "resmii_211": 4,
-                "store": 0.0,
-                "trip_count": -1
-            }
-        ],
-        {
-            "0": {
-                "1": 38611.0,
-                "2": 57791.0,
-                "4": 60244.0,
-                "8": 110254.0,
-                "16": 110511.0,
-                "32": 53433.0,
-                "64": 59250.0
-            }
-        }
-    ],
-    "jfdctint.c": [
-        [
-            {
-                "aluf": 0.0,
-                "alui": 5.0,
-                "array_accesses": 1,
-                "array_reads": 0,
-                "array_writes": 1,
-                "branch": 2.0,
-                "has_inter_loop_carried_dependency": false,
-                "instruction_sum": 18.0,
-                "inter_loop_dependencies": 0,
-                "intra_loop_dependencies": 0,
-                "load": 0.0,
-                "loop_line_number": 366,
-                "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 0,
-                "mem": 2.0,
-                "operand_sum": 0,
-                "other": 8.0,
-                "resmii_111": 5,
-                "resmii_121": 5,
-                "resmii_211": 3,
-                "store": 1.0,
-                "trip_count": 999999
-            }
-        ],
-        {
-            "0": {
-                "1": 187.0,
-                "2": 211.0,
-                "4": 554.0,
-                "8": 402.0,
-                "16": 398.0,
-                "32": 513.0,
-                "64": 402.0
-            },
-            "1": {
-                "1": 2506.0,
-                "2": 161.0,
-                "4": 547.0,
-                "8": 390.0,
-                "16": 453.0,
-                "32": 429.0,
-                "64": 1132.0
-            },
-            "2": {
-                "1": 9191905.0,
-                "2": 6013538.0,
-                "4": 8623581.0,
-                "8": 8895658.0,
-                "16": 9081044.0,
-                "32": 6752093.0,
-                "64": 9061187.0
-            }
-        }
-    ],
-    "minver.c": [
-        null,
-        {
-            "0": {
-                "1": 103129.68066666667,
-                "2": 103609.38583333333,
-                "4": 106073.781,
-                "8": 107432.10383333333,
-                "16": 101921.748,
-                "32": 107579.59716666667,
-                "64": 106221.50433333333
-            },
-            "1": {
-                "1": 204.88888888888889,
-                "2": 208.0,
-                "4": 209.0,
-                "8": 206.66666666666666,
-                "16": 268.3333333333333,
-                "32": 208.11111111111111,
-                "64": 204.0
-            },
-            "2": {
-                "1": 55.0,
-                "2": 111.0,
-                "4": 47.0,
-                "8": 42.0,
-                "16": 45.0,
-                "32": 48.0,
-                "64": 135.0
-            },
-            "3": {
-                "1": 38.333333333333336,
-                "2": 66.33333333333333,
-                "4": 40.333333333333336,
-                "8": 40.0,
-                "16": 63.333333333333336,
-                "32": 53.333333333333336,
-                "64": 54.666666666666664
-            },
-            "4": {
-                "1": 174.0,
-                "2": 50.0,
-                "4": 43.0,
-                "8": 44.0,
-                "16": 108.0,
-                "32": 195.0,
-                "64": 168.0
-            },
-            "5": {
-                "1": 71.0,
-                "2": 116.33333333333333,
-                "4": 33.0,
-                "8": 59.333333333333336,
-                "16": 48.666666666666664,
-                "32": 56.333333333333336,
-                "64": 50.0
-            },
-            "6": {
-                "1": 35.333333333333336,
-                "2": 37.833333333333336,
-                "4": 39.0,
-                "8": 42.0,
-                "16": 36.0,
-                "32": 41.833333333333336,
-                "64": 40.833333333333336
-            },
-            "7": {
-                "1": 48.0,
-                "2": 81.0,
-                "4": 79.0,
-                "8": 44.0,
-                "16": 53.0,
-                "32": 112.0,
-                "64": 141.0
-            }
-        }
-    ],
-    "qsort-exam.c": [
-        [
-            {
-                "aluf": 0.0,
-                "alui": 3.0,
-                "array_accesses": 1,
-                "array_reads": 0,
-                "array_writes": 1,
+                "array_accesses": 0.0,
+                "array_reads": 0.0,
+                "array_writes": 0.0,
                 "branch": 2.0,
                 "has_inter_loop_carried_dependency": false,
                 "instruction_sum": 14.0,
-                "inter_loop_dependencies": 0,
-                "intra_loop_dependencies": 3,
-                "load": 0.0,
-                "loop_line_number": 122,
+                "inter_loop_dependencies": 0.0,
+                "intra_loop_dependencies": 2.0,
+                "load": 1.0,
+                "loop_line_number": 7,
                 "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 0,
-                "mem": 2.0,
-                "operand_sum": 0,
-                "other": 6.0,
+                "max_inter_loop_dependency_distance": 0.0,
+                "mem": 3.0,
+                "operand_sum": 0.0,
+                "other": 4.0,
                 "resmii_111": 3,
                 "resmii_121": 3,
-                "resmii_211": 2,
-                "store": 1.0,
-                "trip_count": 9999999
-            }
-        ],
-        {
-            "0": {
-                "1": 23.144199645287888,
-                "2": 22.886507222084685,
-                "4": 23.156550769692814,
-                "8": 24.596175602787373,
-                "16": 23.18486897161897,
-                "32": 23.306367366485794,
-                "64": 23.290332755674786
-            },
-            "1": {
-                "1": 23.545396422804583,
-                "2": 23.513540345976146,
-                "4": 23.8800080105287,
-                "8": 25.56332773907872,
-                "16": 24.173625525943166,
-                "32": 24.160815782557528,
-                "64": 24.401299037374564
-            },
-            "2": {
-                "1": 23.36439328063939,
-                "2": 23.573346166321375,
-                "4": 23.623898030206956,
-                "8": 25.181589403906695,
-                "16": 23.955987148852067,
-                "32": 23.862651636332085,
-                "64": 24.15231285856322
-            },
-            "3": {
-                "1": 167546075.0,
-                "2": 171456332.0,
-                "4": 184266608.0,
-                "8": 171408098.0,
-                "16": 176889679.0,
-                "32": 159452630.0,
-                "64": 158580091.0
-            }
-        }
-    ],
-    "linear_search.c": [
-        [
-            {
-                "aluf": 0.0,
-                "alui": 3.0,
-                "array_accesses": 0,
-                "array_reads": 0,
-                "array_writes": 0,
-                "branch": 2.0,
-                "has_inter_loop_carried_dependency": false,
-                "instruction_sum": 13.0,
-                "inter_loop_dependencies": 0,
-                "intra_loop_dependencies": 3,
-                "load": 0.0,
-                "loop_line_number": 25,
-                "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 0,
-                "mem": 2.0,
-                "operand_sum": 0,
-                "other": 5.0,
-                "resmii_111": 3,
-                "resmii_121": 3,
-                "resmii_211": 2,
-                "store": 1.0,
-                "trip_count": 99999999
-            }
-        ],
-        {
-            "0": {
-                "1": 49399137.0,
-                "2": 42201472.0,
-                "4": 42201493.0,
-                "8": 40556120.0,
-                "16": 43360011.0,
-                "32": 40210824.0,
-                "64": 36151088.0
-            },
-            "1": {
-                "1": 1612527123.0,
-                "2": 1604124852.0,
-                "4": 1607864942.0,
-                "8": 1568939551.0,
-                "16": 1578561714.0,
-                "32": 1584131391.0,
-                "64": 1586668804.0
-            }
-        }
-    ],
-    "shell_sort.c": [
-        [
-            {
-                "aluf": 0.0,
-                "alui": 4.0,
-                "array_accesses": 1,
-                "array_reads": 0,
-                "array_writes": 1,
-                "branch": 2.0,
-                "has_inter_loop_carried_dependency": false,
-                "instruction_sum": 14.0,
-                "inter_loop_dependencies": 0,
-                "intra_loop_dependencies": 3,
-                "load": 0.0,
-                "loop_line_number": 50,
-                "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 0,
-                "mem": 2.0,
-                "operand_sum": 0,
-                "other": 5.0,
-                "resmii_111": 4,
-                "resmii_121": 4,
-                "resmii_211": 2,
-                "store": 1.0,
-                "trip_count": 2004999
-            }
-        ],
-        {
-            "0": {
-                "1": 40286522.0,
-                "2": 40169412.0,
-                "4": 40349668.0,
-                "8": 34018258.0,
-                "16": 33663041.0,
-                "32": 31384045.0,
-                "64": 34547544.0
-            }
-        }
-    ],
-    "pancake_sort.c": [
-        [
-            {
-                "aluf": 0.0,
-                "alui": 3.0,
-                "array_accesses": 1,
-                "array_reads": 0,
-                "array_writes": 1,
-                "branch": 2.0,
-                "has_inter_loop_carried_dependency": false,
-                "instruction_sum": 13.0,
-                "inter_loop_dependencies": 0,
-                "intra_loop_dependencies": 3,
-                "load": 0.0,
-                "loop_line_number": 72,
-                "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 0,
-                "mem": 2.0,
-                "operand_sum": 0,
-                "other": 5.0,
-                "resmii_111": 3,
-                "resmii_121": 3,
-                "resmii_211": 2,
-                "store": 1.0,
-                "trip_count": 19999
-            }
-        ],
-        {
-            "0": {
-                "1": 2422.6643575251337,
-                "2": 2561.949982493873,
-                "4": 2291.848121842645,
-                "8": 2520.5667233531735,
-                "16": 2578.843070074526,
-                "32": 2594.70522182764,
-                "64": 2461.6811383984395
-            },
-            "1": {
-                "1": 7706.091154557728,
-                "2": 5319.444872243612,
-                "4": 4024.114705735287,
-                "8": 4272.795589779489,
-                "16": 3452.889294464723,
-                "32": 3951.4855242762137,
-                "64": 3525.459122956148
-            },
-            "2": {
-                "1": 253508761.0,
-                "2": 211578597.0,
-                "4": 174661403.0,
-                "8": 188823429.0,
-                "16": 174792264.0,
-                "32": 185430055.0,
-                "64": 171600465.0
-            },
-            "4": {
-                "1": 330160.0,
-                "2": 378387.0,
-                "4": 345490.0,
-                "8": 340046.0,
-                "16": 472497.0,
-                "32": 978111.0,
-                "64": 491980.0
-            }
-        }
-    ],
-    "bs.c": [
-        [
-            {
-                "aluf": 0.0,
-                "alui": 8.0,
-                "array_accesses": 3,
-                "array_reads": 3,
-                "array_writes": 0,
-                "branch": 7.0,
-                "has_inter_loop_carried_dependency": true,
-                "instruction_sum": 48.0,
-                "inter_loop_dependencies": 3,
-                "intra_loop_dependencies": 6,
-                "load": 3.0,
-                "loop_line_number": 96,
-                "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 0,
-                "mem": 6.0,
-                "operand_sum": 0,
-                "other": 24.0,
-                "resmii_111": 8,
-                "resmii_121": 8,
-                "resmii_211": 7,
-                "store": 0.0,
-                "trip_count": -1
-            },
-            {
-                "aluf": 0.0,
-                "alui": 4.0,
-                "array_accesses": 2,
-                "array_reads": 0,
-                "array_writes": 2,
-                "branch": 2.0,
-                "has_inter_loop_carried_dependency": false,
-                "instruction_sum": 18.0,
-                "inter_loop_dependencies": 0,
-                "intra_loop_dependencies": 5,
-                "load": 0.0,
-                "loop_line_number": 86,
-                "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 0,
-                "mem": 4.0,
-                "operand_sum": 0,
-                "other": 6.0,
-                "resmii_111": 4,
-                "resmii_121": 4,
-                "resmii_211": 4,
-                "store": 2.0,
-                "trip_count": 999999
-            }
-        ],
-        {
-            "0": {
-                "1": 23582955.0,
-                "2": 23502473.0,
-                "4": 18707057.0,
-                "8": 27406454.0,
-                "16": 17630878.0,
-                "32": 22842455.0,
-                "64": 17437270.0
-            },
-            "1": {
-                "1": 87.0,
-                "2": 63.0,
-                "4": 42.0,
-                "8": 63.0,
-                "16": 83.0,
-                "32": 140.0,
-                "64": 140.0
-            }
-        }
-    ],
-    "alaw.c": [
-        [
-            {
-                "aluf": 0.0,
-                "alui": 3.0,
-                "array_accesses": 1,
-                "array_reads": 0,
-                "array_writes": 1,
-                "branch": 2.0,
-                "has_inter_loop_carried_dependency": false,
-                "instruction_sum": 13.0,
-                "inter_loop_dependencies": 0,
-                "intra_loop_dependencies": 3,
-                "load": 0.0,
-                "loop_line_number": 187,
-                "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 0,
-                "mem": 2.0,
-                "operand_sum": 0,
-                "other": 5.0,
-                "resmii_111": 3,
-                "resmii_121": 3,
-                "resmii_211": 2,
-                "store": 1.0,
-                "trip_count": 1999999
-            },
-            {
-                "aluf": 0.0,
-                "alui": 3.0,
-                "array_accesses": 1,
-                "array_reads": 0,
-                "array_writes": 1,
-                "branch": 2.0,
-                "has_inter_loop_carried_dependency": false,
-                "instruction_sum": 13.0,
-                "inter_loop_dependencies": 0,
-                "intra_loop_dependencies": 3,
-                "load": 0.0,
-                "loop_line_number": 183,
-                "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 0,
-                "mem": 2.0,
-                "operand_sum": 0,
-                "other": 5.0,
-                "resmii_111": 3,
-                "resmii_121": 3,
-                "resmii_211": 2,
-                "store": 1.0,
-                "trip_count": 1999999
-            },
-            {
-                "aluf": 0.0,
-                "alui": 3.0,
-                "array_accesses": 1,
-                "array_reads": 0,
-                "array_writes": 1,
-                "branch": 2.0,
-                "has_inter_loop_carried_dependency": false,
-                "instruction_sum": 13.0,
-                "inter_loop_dependencies": 0,
-                "intra_loop_dependencies": 3,
-                "load": 0.0,
-                "loop_line_number": 179,
-                "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 0,
-                "mem": 2.0,
-                "operand_sum": 0,
-                "other": 5.0,
-                "resmii_111": 3,
-                "resmii_121": 3,
-                "resmii_211": 2,
-                "store": 1.0,
-                "trip_count": 1999999
-            }
-        ],
-        {
-            "4": {
-                "1": 39899130.0,
-                "2": 33338531.0,
-                "4": 38851735.0,
-                "8": 30721260.0,
-                "16": 38222084.0,
-                "32": 34180671.0,
-                "64": 37928910.0
-            },
-            "5": {
-                "1": 34318226.0,
-                "2": 33467740.0,
-                "4": 30582862.0,
-                "8": 30284173.0,
-                "16": 32712758.0,
-                "32": 34346809.0,
-                "64": 32400619.0
-            },
-            "6": {
-                "1": 34451352.0,
-                "2": 33517277.0,
-                "4": 30484327.0,
-                "8": 31333323.0,
-                "16": 32759022.0,
-                "32": 34371656.0,
-                "64": 32535929.0
-            }
-        }
-    ],
-    "hash_crc32.c": [
-        null,
-        {
-            "0": {
-                "1": 15.472029,
-                "2": 16.628991,
-                "4": 15.395157,
-                "8": 20.418952,
-                "16": 20.17838,
-                "32": 19.045387,
-                "64": 20.826584
-            },
-            "1": {
-                "1": 15281426.0,
-                "2": 16122095.0,
-                "4": 15228843.0,
-                "8": 16970364.0,
-                "16": 16081530.0,
-                "32": 15271571.0,
-                "64": 22789191.0
-            }
-        }
-    ],
-    "fir.c": [
-        [
-            {
-                "aluf": 4.0,
-                "alui": 3.0,
-                "array_accesses": 0,
-                "array_reads": 0,
-                "array_writes": 0,
-                "branch": 7.0,
-                "has_inter_loop_carried_dependency": false,
-                "instruction_sum": 43.0,
-                "inter_loop_dependencies": 0,
-                "intra_loop_dependencies": 0,
-                "load": 0.0,
-                "loop_line_number": 180,
-                "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 0,
-                "mem": 0.0,
-                "operand_sum": 0,
-                "other": 29.0,
-                "resmii_111": 7,
-                "resmii_121": 7,
-                "resmii_211": 7,
-                "store": 0.0,
-                "trip_count": 18
-            }
-        ],
-        {
-            "4": {
-                "1": 26.74448,
-                "2": 29.27094,
-                "4": 26.62952,
-                "8": 43.21071,
-                "16": 43.98353,
-                "32": 45.409,
-                "64": 28.10457
-            },
-            "5": {
-                "1": 26.69445,
-                "2": 27.06147,
-                "4": 27.33119,
-                "8": 20.45486,
-                "16": 20.79271,
-                "32": 21.87757,
-                "64": 26.91404
-            },
-            "6": {
-                "1": 1666778.0,
-                "2": 833435.0,
-                "4": 416819.0,
-                "8": 2379991.0,
-                "16": 2370971.0,
-                "32": 2998668.0,
-                "64": 25134.0
-            },
-            "7": {
-                "1": 14389094.0,
-                "2": 14818584.0,
-                "4": 14549156.0,
-                "8": 13171734.0,
-                "16": 13545360.0,
-                "32": 14062563.0,
-                "64": 14854093.0
-            },
-            "8": {
-                "1": 4051606.0,
-                "2": 3981989.0,
-                "4": 4139151.0,
-                "8": 3171483.0,
-                "16": 3293201.0,
-                "32": 3439495.0,
-                "64": 4025749.0
-            }
-        }
-    ],
-    "crc.c": [
-        null,
-        {
-            "0": {
-                "1": 33.4375,
-                "2": 68.69921875,
-                "4": 22.98046875,
-                "8": 22.04296875,
-                "16": 23.09375,
-                "32": 70.6640625,
-                "64": 26.984375
-            },
-            "1": {
-                "1": 29337.0,
-                "2": 58802.0,
-                "4": 20786.0,
-                "8": 20743.0,
-                "16": 23148.0,
-                "32": 61279.0,
-                "64": 23442.0
-            },
-            "2": {
-                "1": 178.5,
-                "2": 386.5,
-                "4": 128.0,
-                "8": 128.5,
-                "16": 203.0,
-                "32": 365.0,
-                "64": 122.5
-            }
-        }
-    ],
-    "cocktail_sort.c": [
-        [
-            {
-                "aluf": 0.0,
-                "alui": 3.0,
-                "array_accesses": 0,
-                "array_reads": 0,
-                "array_writes": 0,
-                "branch": 2.0,
-                "has_inter_loop_carried_dependency": false,
-                "instruction_sum": 13.0,
-                "inter_loop_dependencies": 0,
-                "intra_loop_dependencies": 3,
-                "load": 0.0,
-                "loop_line_number": 57,
-                "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 0,
-                "mem": 2.0,
-                "operand_sum": 0,
-                "other": 5.0,
-                "resmii_111": 3,
-                "resmii_121": 3,
-                "resmii_211": 2,
-                "store": 1.0,
-                "trip_count": 29999
-            }
-        ],
-        {
-            "0": {
-                "1": 39889.8048455804,
-                "2": 37918.880591054316,
-                "4": 36862.71112886049,
-                "8": 37835.96632055378,
-                "16": 37924.72177848775,
-                "32": 36253.776890308836,
-                "64": 38212.998136315226
-            },
-            "1": {
-                "1": 50781.583998935035,
-                "2": 44278.43091054313,
-                "4": 38879.36288604899,
-                "8": 39485.80111821086,
-                "16": 38661.44036208733,
-                "32": 36355.90548455804,
-                "64": 38478.257321618745
-            },
-            "2": {
-                "1": 498562.0,
-                "2": 693952.0,
-                "4": 478869.0,
-                "8": 489499.0,
-                "16": 1117211.0,
-                "32": 1438546.0,
-                "64": 1355261.0
-            }
-        }
-    ],
-    "armstrong_number.c": [
-        null,
-        {
-            "0": {
-                "1": 258.0,
-                "2": 89.0,
-                "4": 106.5,
-                "8": 93.0,
-                "16": 74.5,
-                "32": 77.0,
-                "64": 212.0
-            },
-            "1": {
-                "1": 615.0,
-                "2": 230.5,
-                "4": 293.5,
-                "8": 270.0,
-                "16": 282.5,
-                "32": 272.5,
-                "64": 808.0
-            }
-        }
-    ],
-    "hash_adler32.c": [
-        null,
-        {
-            "0": {
-                "1": 38.0,
-                "2": 34.0,
-                "4": 4542606.0,
-                "8": 4437742.0,
-                "16": 5037450.0,
-                "32": 4222031.0,
-                "64": 4937941.0
-            },
-            "1": {
-                "1": 20464917.0,
-                "2": 14397328.0,
-                "4": 16070309.0,
-                "8": 16052003.0,
-                "16": 21658311.0,
-                "32": 15342625.0,
-                "64": 20664749.0
-            }
-        }
-    ],
-    "catalan.c": [
-        null,
-        {
-            "0": {
-                "1": 158.66666666666666,
-                "2": 79.33333333333333,
-                "4": 56.0,
-                "8": 57.666666666666664,
-                "16": 64.33333333333333,
-                "32": 64.66666666666667,
-                "64": 84.66666666666667
-            }
-        }
-    ],
-    "matrix_chain_order.c": [
-        [
-            {
-                "aluf": 0.0,
-                "alui": 4.0,
-                "array_accesses": 1,
-                "array_reads": 0,
-                "array_writes": 1,
-                "branch": 2.0,
-                "has_inter_loop_carried_dependency": false,
-                "instruction_sum": 14.0,
-                "inter_loop_dependencies": 0,
-                "intra_loop_dependencies": 3,
-                "load": 0.0,
-                "loop_line_number": 101,
-                "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 0,
-                "mem": 2.0,
-                "operand_sum": 0,
-                "other": 5.0,
-                "resmii_111": 4,
-                "resmii_121": 4,
                 "resmii_211": 2,
                 "store": 1.0,
                 "trip_count": 999
-            }
-        ],
-        {
-            "0": {
-                "1": 1499382.0,
-                "2": 1276843.0,
-                "4": 1778107.0,
-                "8": 2542298.0,
-                "16": 1724826.0,
-                "32": 1758659.0,
-                "64": 2250240.0
             },
-            "1": {
-                "1": 6091.0,
-                "2": 5777.0,
-                "4": 8357.0,
-                "8": 8499.0,
-                "16": 8623.0,
-                "32": 8483.0,
-                "64": 8776.0
+            {
+                "aluf": 0.0,
+                "alui": 6.0,
+                "array_accesses": 2.0,
+                "array_reads": 1.0,
+                "array_writes": 1.0,
+                "branch": 2.0,
+                "has_inter_loop_carried_dependency": true,
+                "instruction_sum": 17.0,
+                "inter_loop_dependencies": 2.0,
+                "intra_loop_dependencies": 2.0,
+                "load": 1.0,
+                "loop_line_number": 21,
+                "loop_nest_level": 3,
+                "max_inter_loop_dependency_distance": 0.0,
+                "mem": 3.0,
+                "operand_sum": 0.0,
+                "other": 4.0,
+                "resmii_111": 6,
+                "resmii_121": 6,
+                "resmii_211": 2,
+                "store": 1.0,
+                "trip_count": 999
             },
-            "2": {
-                "1": 595.4312852852853,
-                "2": 515.9505125125125,
-                "4": 513.0522642642643,
-                "8": 504.5151651651652,
-                "16": 493.75798198198197,
-                "32": 464.1669249249249,
-                "64": 514.3097877877877
-            },
-            "3": {
-                "1": 30898.0,
-                "2": 30489.0,
-                "4": 30811.0,
-                "8": 28019.0,
-                "16": 25531.0,
-                "32": 19505.0,
-                "64": 23708.0
-            },
-            "4": {
-                "1": 48562.0,
-                "2": 16520.0,
-                "4": 26834.0,
-                "8": 48527.0,
-                "16": 25192.0,
-                "32": 26436.0,
-                "64": 53175.0
-            }
-        }
-    ],
-    "bubble_sort_2.c": [
-        [
             {
                 "aluf": 0.0,
                 "alui": 4.0,
-                "array_accesses": 2,
-                "array_reads": 2,
-                "array_writes": 0,
-                "branch": 4.0,
+                "array_accesses": 2.0,
+                "array_reads": 1.0,
+                "array_writes": 1.0,
+                "branch": 2.0,
                 "has_inter_loop_carried_dependency": true,
-                "instruction_sum": 19.0,
-                "inter_loop_dependencies": 2,
-                "intra_loop_dependencies": 0,
-                "load": 2.0,
-                "loop_line_number": 77,
-                "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 1,
-                "mem": 4.0,
-                "operand_sum": 0,
-                "other": 5.0,
+                "instruction_sum": 15.0,
+                "inter_loop_dependencies": 2.0,
+                "intra_loop_dependencies": 2.0,
+                "load": 1.0,
+                "loop_line_number": 25,
+                "loop_nest_level": 3,
+                "max_inter_loop_dependency_distance": 0.0,
+                "mem": 3.0,
+                "operand_sum": 0.0,
+                "other": 4.0,
                 "resmii_111": 4,
                 "resmii_121": 4,
-                "resmii_211": 4,
-                "store": 0.0,
-                "trip_count": -1
+                "resmii_211": 2,
+                "store": 1.0,
+                "trip_count": 344
             },
             {
                 "aluf": 0.0,
-                "alui": 3.0,
-                "array_accesses": 1,
-                "array_reads": 0,
-                "array_writes": 1,
+                "alui": 4.0,
+                "array_accesses": 2.0,
+                "array_reads": 1.0,
+                "array_writes": 1.0,
                 "branch": 2.0,
-                "has_inter_loop_carried_dependency": false,
-                "instruction_sum": 13.0,
-                "inter_loop_dependencies": 0,
-                "intra_loop_dependencies": 3,
-                "load": 0.0,
-                "loop_line_number": 68,
-                "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 0,
-                "mem": 2.0,
-                "operand_sum": 0,
-                "other": 5.0,
-                "resmii_111": 3,
-                "resmii_121": 3,
+                "has_inter_loop_carried_dependency": true,
+                "instruction_sum": 15.0,
+                "inter_loop_dependencies": 2.0,
+                "intra_loop_dependencies": 2.0,
+                "load": 1.0,
+                "loop_line_number": 30,
+                "loop_nest_level": 2,
+                "max_inter_loop_dependency_distance": 0.0,
+                "mem": 3.0,
+                "operand_sum": 0.0,
+                "other": 4.0,
+                "resmii_111": 4,
+                "resmii_121": 4,
                 "resmii_211": 2,
                 "store": 1.0,
-                "trip_count": 24999
+                "trip_count": 383
             }
         ],
         {
             "0": {
-                "1": 28139.380652756354,
-                "2": 27851.805472111715,
-                "4": 29268.259072826175,
-                "8": 28188.906064788505,
-                "16": 28318.407526183324,
-                "32": 27392.501055451816,
-                "64": 27107.887432004547
+                "1": 254.13713713713713,
+                "2": 163.77577577577577,
+                "4": 217.97897897897897,
+                "8": 182.43643643643642,
+                "16": 172.23323323323322,
+                "32": 186.95195195195194,
+                "64": 165.82282282282281
             },
             "1": {
-                "1": 392719.0,
-                "2": 409381.0,
-                "4": 802122.0,
-                "8": 411727.0,
-                "16": 587588.0,
-                "32": 587877.0,
-                "64": 395724.0
+                "1": 592.1947857857858,
+                "2": 484.0842122122122,
+                "4": 433.2929469469469,
+                "8": 405.19946646646645,
+                "16": 390.52176176176175,
+                "32": 318.7527197197197,
+                "64": 305.7801161161161
             },
             "2": {
-                "1": 13220.0,
-                "2": 5402.0,
-                "4": 4597.0,
-                "8": 4154.0,
-                "16": 6356.0,
-                "32": 5272.0,
-                "64": 5195.0
-            }
-        }
-    ],
-    "hash_djb2.c": [
-        null,
-        {
-            "0": {
-                "1": 32.0,
-                "2": 62.0,
-                "4": 34.0,
-                "8": 894507.0,
-                "16": 874733.0,
-                "32": 857350.0,
-                "64": 970273.0
-            },
-            "1": {
-                "1": 15549749.0,
-                "2": 19730973.0,
-                "4": 15033476.0,
-                "8": 16123930.0,
-                "16": 16087031.0,
-                "32": 17402916.0,
-                "64": 20793408.0
-            }
-        }
-    ],
-    "bogo_sort.c": [
-        [
-            {
-                "aluf": 0.0,
-                "alui": 3.0,
-                "array_accesses": 1,
-                "array_reads": 0,
-                "array_writes": 1,
-                "branch": 2.0,
-                "has_inter_loop_carried_dependency": false,
-                "instruction_sum": 13.0,
-                "inter_loop_dependencies": 0,
-                "intra_loop_dependencies": 3,
-                "load": 0.0,
-                "loop_line_number": 41,
-                "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 0,
-                "mem": 2.0,
-                "operand_sum": 0,
-                "other": 5.0,
-                "resmii_111": 3,
-                "resmii_121": 3,
-                "resmii_211": 2,
-                "store": 1.0,
-                "trip_count": 5
-            }
-        ],
-        {
-            "0": {
-                "1": 96.0,
-                "2": 197.0,
-                "4": 70.0,
-                "8": 216.0,
-                "16": 97.0,
-                "32": 95.0,
-                "64": 101.0
-            },
-            "1": {
-                "1": 167.986301369863,
-                "2": 341.3816046966732,
-                "4": 111.6399217221135,
-                "8": 339.1311154598826,
-                "16": 169.08414872798434,
-                "32": 116.46966731898239,
-                "64": 113.50097847358121
-            },
-            "2": {
-                "1": 135444.0,
-                "2": 274297.0,
-                "4": 91617.0,
-                "8": 285323.0,
-                "16": 144634.0,
-                "32": 108468.0,
-                "64": 117270.0
+                "1": 17.020888888888887,
+                "2": 16.752088088088087,
+                "4": 16.691124124124123,
+                "8": 16.736634634634633,
+                "16": 16.529571571571573,
+                "32": 16.822454454454455,
+                "64": 16.184142142142143
             },
             "3": {
-                "1": 1441.0,
-                "2": 2123.0,
-                "4": 1045.0,
-                "8": 2143.0,
-                "16": 1255.0,
-                "32": 1008.0,
-                "64": 1187.0
-            }
-        }
-    ],
-    "lms.c": [
-        null,
-        {
-            "0": {
-                "1": 234.90316193676125,
-                "2": 214.49603007939842,
-                "4": 235.89798204035918,
-                "8": 238.01469970600587,
-                "16": 226.06057878842424,
-                "32": 220.9790004199916,
-                "64": 232.26291474170517
-            },
-            "1": {
-                "1": 6560.951230487695,
-                "2": 6558.477725222748,
-                "4": 6821.742602573974,
-                "8": 6824.9785902140975,
-                "16": 6751.482235177648,
-                "32": 6804.261817381826,
-                "64": 6890.29581704183
-            },
-            "2": {
-                "1": 16.296827031729684,
-                "2": 16.21866781332187,
-                "4": 17.931320686793132,
-                "8": 18.25670743292567,
-                "16": 17.268337316626834,
-                "32": 17.40629593704063,
-                "64": 18.005059949400508
-            },
-            "3": {
-                "1": 87.85914140858591,
-                "2": 87.97143028569714,
-                "4": 97.55179448205519,
-                "8": 97.24271757282428,
-                "16": 96.46940530594694,
-                "32": 93.69914300856992,
-                "64": 101.19185808141918
-            },
-            "4": {
-                "1": 21.52276954460911,
-                "2": 20.021859562808743,
-                "4": 22.296334073318533,
-                "8": 22.738145237095257,
-                "16": 22.69814603707926,
-                "32": 22.148277034459312,
-                "64": 23.129637407251856
-            },
-            "5": {
-                "1": 693712762.0,
-                "2": 692316172.0,
-                "4": 722573650.0,
-                "8": 724320959.0,
-                "16": 714478728.0,
-                "32": 719460464.0,
-                "64": 729930497.0
-            },
-            "6": {
-                "1": 18559289.0,
-                "2": 18018325.0,
-                "4": 18546009.0,
-                "8": 18457526.0,
-                "16": 17949813.0,
-                "32": 19151007.0,
-                "64": 19017752.0
-            },
-            "7": {
-                "1": 31.76921230787692,
-                "2": 31.642433575664242,
-                "4": 31.48841511584884,
-                "8": 31.219147808521914,
-                "16": 31.121128788712113,
-                "32": 32.08304916950831,
-                "64": 31.72740272597274
-            },
-            "8": {
-                "1": 24.53558464415356,
-                "2": 25.933430665693344,
-                "4": 29.131488685113148,
-                "8": 30.064479355206448,
-                "16": 24.79790202097979,
-                "32": 25.33749662503375,
-                "64": 25.165078349216508
-            },
-            "9": {
-                "1": 26.638963610363895,
-                "2": 21.06989930100699,
-                "4": 22.46151538484615,
-                "8": 21.79549204507955,
-                "16": 22.003539964600353,
-                "32": 27.830441695583044,
-                "64": 27.9350006499935
-            }
-        }
-    ],
-    "fibcall.c": [
-        null,
-        {
-            "0": {
-                "1": 196.0,
-                "2": 157.0,
-                "4": 145.0,
-                "8": 98.0,
-                "16": 333.0,
-                "32": 291654612.0,
-                "64": 283328915.0
-            }
-        }
-    ],
-    "insertsort.c": [
-        [
-            {
-                "aluf": 0.0,
-                "alui": 3.0,
-                "array_accesses": 1,
-                "array_reads": 0,
-                "array_writes": 1,
-                "branch": 2.0,
-                "has_inter_loop_carried_dependency": false,
-                "instruction_sum": 13.0,
-                "inter_loop_dependencies": 0,
-                "intra_loop_dependencies": 3,
-                "load": 0.0,
-                "loop_line_number": 52,
-                "loop_nest_level": 1,
-                "max_inter_loop_dependency_distance": 0,
-                "mem": 2.0,
-                "operand_sum": 0,
-                "other": 5.0,
-                "resmii_111": 3,
-                "resmii_121": 3,
-                "resmii_211": 2,
-                "store": 1.0,
-                "trip_count": 99999
-            }
-        ],
-        {
-            "0": {
-                "1": 1654755.0,
-                "2": 1769656.0,
-                "4": 3485655.0,
-                "8": 3119820.0,
-                "16": 1709818.0,
-                "32": 2597684.0,
-                "64": 2465188.0
-            },
-            "1": {
-                "1": 14506.537825378255,
-                "2": 14711.026170261703,
-                "4": 14734.108571085711,
-                "8": 14754.609996099962,
-                "16": 14666.0010600106,
-                "32": 14762.944439444394,
-                "64": 14741.962859628597
+                "1": 19.80880880880881,
+                "2": 16.58258258258258,
+                "4": 16.71171171171171,
+                "8": 17.001001001001,
+                "16": 16.7017017017017,
+                "32": 19.076076076076077,
+                "64": 17.96896896896897
             }
         }
     ]
