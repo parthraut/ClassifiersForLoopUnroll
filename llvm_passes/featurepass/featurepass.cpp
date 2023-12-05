@@ -50,8 +50,6 @@ using namespace std;
 #define ARRAY_WRITES 10
 #define ARRAY_ACCESSES 11
 
-
-
 #define IS_ALUI(ins)                                                               \
   (ins.getOpcode() == Instruction::Add || ins.getOpcode() == Instruction::Sub ||   \
    ins.getOpcode() == Instruction::Mul || ins.getOpcode() == Instruction::UDiv ||  \
@@ -82,14 +80,14 @@ using namespace std;
   (ins.getOpcode() == Instruction::Br || ins.getOpcode() == Instruction::Switch || \
    ins.getOpcode() == Instruction::IndirectBr)
 
-
 namespace
 {
 
   struct FeaturePass : public PassInfoMixin<FeaturePass>
   {
-  
-    int getLineNumber(Loop* L) {
+
+    int getLineNumber(Loop *L)
+    {
       int line_number = -1;
       Instruction *I_line = L->getHeader()->getFirstNonPHIOrDbg();
       if (auto DL = I_line->getDebugLoc())
@@ -101,17 +99,20 @@ namespace
       return line_number;
     }
 
-    int64_t getTripCount(Loop* L, ScalarEvolution &SE) {
-      const SCEV* trip_count_scev = SE.getBackedgeTakenCount(L);
+    int64_t getTripCount(Loop *L, ScalarEvolution &SE)
+    {
+      const SCEV *trip_count_scev = SE.getBackedgeTakenCount(L);
       int64_t trip_count = -1;
-      if (isa<SCEVConstant>(trip_count_scev)) {
-        const SCEVConstant* trip_count_constant = cast<SCEVConstant>(trip_count_scev);
+      if (isa<SCEVConstant>(trip_count_scev))
+      {
+        const SCEVConstant *trip_count_constant = cast<SCEVConstant>(trip_count_scev);
         trip_count = trip_count_constant->getValue()->getZExtValue();
       }
       return trip_count;
     }
 
-    vector<float> getInstructionCounts(Loop* L) {
+    vector<float> getInstructionCounts(Loop *L)
+    {
       vector<float> counts(NUM_INST_COUNTS, 0);
       int operand_sum = 0;
       int array_read = 0;
@@ -124,37 +125,48 @@ namespace
         {
 
           // array read
-          if (isa<LoadInst>(I)) {
-            LoadInst* loadInst = dyn_cast<LoadInst>(&I);
-            Value* ptr_operand = loadInst->getPointerOperand();
-            if (isa<GEPOperator>(ptr_operand)) {
-              GEPOperator* gep = dyn_cast<GEPOperator>(ptr_operand);
-              Value* firstOperand = gep->getOperand(0);
-              Type* type = firstOperand->getType();
-              if (PointerType *pointerType = dyn_cast<PointerType>(type)) {
-                  Type* elementType = pointerType->getPointerElementType();
-                  if (elementType->isArrayTy()) {
-                    ++array_read;
-                  }
+          if (isa<LoadInst>(I))
+          {
+            LoadInst *loadInst = dyn_cast<LoadInst>(&I);
+            Value *ptr_operand = loadInst->getPointerOperand();
+            if (isa<GEPOperator>(ptr_operand))
+            {
+              GEPOperator *gep = dyn_cast<GEPOperator>(ptr_operand);
+              Value *firstOperand = gep->getOperand(0);
+              Type *type = firstOperand->getType();
+              if (PointerType *pointerType = dyn_cast<PointerType>(type))
+              {
+                Type *elementType = pointerType->getPointerElementType();
+                if (elementType->isArrayTy())
+                {
+                  ++array_read;
+                }
               }
             }
           }
 
           // Check if instruction has array write
-          if (StoreInst* storeInst = dyn_cast<StoreInst>(&I)) {
-            Value* ptr_operand = storeInst->getPointerOperand();
-            if (isa<GEPOperator>(ptr_operand)) {
-              GEPOperator* gep = dyn_cast<GEPOperator>(ptr_operand);
-              Value* firstOperand = gep->getOperand(0);
-              Type* type = firstOperand->getType();
-              if (PointerType *pointerType = dyn_cast<PointerType>(type)) {
-                  Type* elementType = pointerType->getPointerElementType();
-                  if (elementType->isArrayTy()) {
-                    ++array_write;
-                  }
+          if (StoreInst *storeInst = dyn_cast<StoreInst>(&I))
+          {
+            Value *ptr_operand = storeInst->getPointerOperand();
+            if (isa<GEPOperator>(ptr_operand))
+            {
+              GEPOperator *gep = dyn_cast<GEPOperator>(ptr_operand);
+              Value *firstOperand = gep->getOperand(0);
+              Type *type = firstOperand->getType();
+              if (PointerType *pointerType = dyn_cast<PointerType>(type))
+              {
+                Type *elementType = pointerType->getPointerElementType();
+                if (elementType->isArrayTy())
+                {
+                  ++array_write;
+                }
               }
             }
           }
+
+          // Get number of operands
+          operand_sum += I.getNumOperands();
 
           // Check what type of instruction we have
           if (IS_ALUI(I))
@@ -191,12 +203,12 @@ namespace
       }
 
       float sum = 0;
-      for (int i = 0; i < NUM_INST_COUNTS; ++i) {
+      for (int i = 0; i < NUM_INST_COUNTS; ++i)
+      {
         sum += counts[i];
       }
 
       counts[INSTRUCTION_SUM] = sum;
-      // TODO: fix operand sum
       counts[OPERAND_SUM] = operand_sum;
       counts[ARRAY_READS] = array_read;
       counts[ARRAY_WRITES] = array_write;
@@ -205,34 +217,92 @@ namespace
       return counts;
     }
 
-    vector<float> getDependencyInfo(Loop* L, DependenceInfo& depInfo) {
-      vector<float> dependencyInfo(3, 0.0); 
-      
+    vector<float> getDependencyInfo(Loop *L, DependenceInfo &depInfo)
+    {
+      vector<float> dependencyInfo(12, 0.0);
+
       int max_inter_loop_dependency_distance = 0;
+      int max_inter_loop_dependency_distance_flow = 0;
+      int max_inter_loop_dependency_distance_anti = 0;
+      int max_inter_loop_dependency_distance_output = 0;
+
       int inter_loop_dependencies = 0;
+      int inter_loop_dependencies_flow = 0;
+      int inter_loop_dependencies_anti = 0;
+      int inter_loop_dependencies_output = 0;
+
       int intra_loop_dependencies = 0;
+      int intra_loop_dependencies_flow = 0;
+      int intra_loop_dependencies_anti = 0;
+      int intra_loop_dependencies_output = 0;
 
-      for (llvm::BasicBlock *BB1 : L->blocks()) {
-        for (llvm::Instruction &I1 : *BB1) {
-          for (llvm::BasicBlock *BB2 : L->blocks()) {
-            for (llvm::Instruction &I2 : *BB2) {
+      for (llvm::BasicBlock *BB1 : L->blocks())
+      {
+        for (llvm::Instruction &I1 : *BB1)
+        {
+          for (llvm::BasicBlock *BB2 : L->blocks())
+          {
+            for (llvm::Instruction &I2 : *BB2)
+            {
 
-              auto dependence = depInfo.depends(&I1, &I2, true);	
-              if(dependence && !dependence->isLoopIndependent()){ 
-                  const SCEV* scev_distance = dependence->getDistance(L->getLoopDepth());
-                  if (scev_distance) {
-                    if (const SCEVConstant *constSCEV = dyn_cast<SCEVConstant>(scev_distance)) {
-                      const APInt& intValue = constSCEV->getAPInt();
-                      int int_signed_distance = intValue.getSExtValue();
-                      int int_distance = abs(int_signed_distance);
-                      max_inter_loop_dependency_distance = max_inter_loop_dependency_distance > int_distance ? max_inter_loop_dependency_distance : int_distance;
+              auto dependence = depInfo.depends(&I1, &I2, true);
+              if (dependence && !dependence->isLoopIndependent())
+              {
+                const SCEV *scev_distance = dependence->getDistance(L->getLoopDepth());
+                if (scev_distance)
+                {
+                  if (const SCEVConstant *constSCEV = dyn_cast<SCEVConstant>(scev_distance))
+                  {
+                    const APInt &intValue = constSCEV->getAPInt();
+                    int int_signed_distance = intValue.getSExtValue();
+                    int int_distance = abs(int_signed_distance);
+                    max_inter_loop_dependency_distance = max_inter_loop_dependency_distance > int_distance ? max_inter_loop_dependency_distance : int_distance;
+
+                    if (dependence.isFlow())
+                    {
+                      max_inter_loop_dependency_distance_flow = max_inter_loop_dependency_distance_flow > int_distance ? max_inter_loop_dependency_distance_flow : int_distance;
+                    }
+                    else if (dependence.isAnti())
+                    {
+                      max_inter_loop_dependency_distance_anti = max_inter_loop_dependency_distance_anti > int_distance ? max_inter_loop_dependency_distance_anti : int_distance;
+                    }
+                    else if (dependence.isOutput())
+                    {
+                      max_inter_loop_dependency_distance_output = max_inter_loop_dependency_distance_output > int_distance ? max_inter_loop_dependency_distance_output : int_distance;
                     }
                   }
+                }
 
                 ++inter_loop_dependencies;
 
-              } else if (dependence && dependence->isLoopIndependent()) {
+                if (dependence.isFlow())
+                {
+                  ++inter_loop_dependencies_flow;
+                }
+                else if (dependence.isAnti())
+                {
+                  ++inter_loop_dependencies_anti;
+                }
+                else if (dependence.isOutput())
+                {
+                  ++inter_loop_dependencies_output;
+                }
+              }
+              else if (dependence && dependence->isLoopIndependent())
+              {
                 ++intra_loop_dependencies;
+                if (dependence.isFlow())
+                {
+                  ++intra_loop_dependencies_flow;
+                }
+                else if (dependence.isAnti())
+                {
+                  ++intra_loop_dependencies_anti;
+                }
+                else if (dependence.isOutput())
+                {
+                  ++intra_loop_dependencies_output;
+                }
               }
             }
           }
@@ -240,88 +310,116 @@ namespace
       }
 
       dependencyInfo[0] = max_inter_loop_dependency_distance;
-      dependencyInfo[1] = inter_loop_dependencies;
-      dependencyInfo[2] = intra_loop_dependencies;
+      dependencyInfo[1] = max_inter_loop_dependency_distance_flow;
+      dependencyInfo[2] = max_inter_loop_dependency_distance_anti;
+      dependencyInfo[3] = max_inter_loop_dependency_distance_output;
+
+      dependencyInfo[4] = inter_loop_dependencies;
+      dependencyInfo[5] = inter_loop_dependencies_flow;
+      dependencyInfo[6] = inter_loop_dependencies_anti;
+      dependencyInfo[7] = inter_loop_dependencies_output;
+
+      dependencyInfo[8] = intra_loop_dependencies;
+      dependencyInfo[9] = intra_loop_dependencies_flow;
+      dependencyInfo[10] = intra_loop_dependencies_anti;
+      dependencyInfo[11] = intra_loop_dependencies_output;
 
       return dependencyInfo;
     }
 
-    int getLoopDepth(Loop* L) {
+    int getLoopDepth(Loop *L)
+    {
       int loopDepth = L->getLoopDepth();
       return loopDepth;
     }
-    
-    vector<int> getResMIIEstimates(Loop* L, vector<float> instructionCounts) {
+
+    vector<int> getResMIIEstimates(Loop *L, vector<float> instructionCounts)
+    {
       vector<int> resMII(3, 0);
-      
+
       resMII[0] = ceil((instructionCounts[ALUI] + instructionCounts[ALUF]) / 1); // ALU resMII
-      resMII[1] = ceil((instructionCounts[MEM]) / 1); // MEM resMII
-      resMII[2] = ceil((instructionCounts[BRANCH]) / 1); // BR resMII
+      resMII[1] = ceil((instructionCounts[MEM]) / 1);                            // MEM resMII
+      resMII[2] = ceil((instructionCounts[BRANCH]) / 1);                         // BR resMII
       resMII[0] = *max_element(resMII.begin(), resMII.end());
 
       std::fill(resMII.begin(), resMII.end(), 0);
       resMII[0] = ceil((instructionCounts[ALUI] + instructionCounts[ALUF]) / 2); // ALU resMII
-      resMII[1] = ceil((instructionCounts[MEM]) / 1); // MEM resMII
-      resMII[2] = ceil((instructionCounts[BRANCH]) / 1); // BR resMII
+      resMII[1] = ceil((instructionCounts[MEM]) / 1);                            // MEM resMII
+      resMII[2] = ceil((instructionCounts[BRANCH]) / 1);                         // BR resMII
       resMII[1] = *max_element(resMII.begin(), resMII.end());
-      
+
       std::fill(resMII.begin(), resMII.end(), 0);
       resMII[0] = ceil((instructionCounts[ALUI] + instructionCounts[ALUF]) / 1); // ALU resMII
-      resMII[1] = ceil((instructionCounts[MEM]) / 2); // MEM resMII
-      resMII[2] = ceil((instructionCounts[BRANCH]) / 1); // BR resMII
+      resMII[1] = ceil((instructionCounts[MEM]) / 2);                            // MEM resMII
+      resMII[2] = ceil((instructionCounts[BRANCH]) / 1);                         // BR resMII
       resMII[2] = *max_element(resMII.begin(), resMII.end());
-      
+
       return resMII;
     }
 
-    json get_loop_features(Loop *L, llvm::LoopAnalysis::Result& LI, ScalarEvolution& SE, DependenceInfo& depInfo){
+    json get_loop_features(Loop *L, llvm::LoopAnalysis::Result &LI, ScalarEvolution &SE, DependenceInfo &depInfo)
+    {
       json outer_features = json::array();
-      
-      if (L->getSubLoops().empty()) {
+
+      if (L->getSubLoops().empty())
+      {
         // init inner json
-          json loop_features;
+        json loop_features;
 
-          int line_number = getLineNumber(L);
-          int64_t trip_count = getTripCount(L, SE);
-          vector<float> instruction_counts = getInstructionCounts(L);
-          vector<float> dependency_info = getDependencyInfo(L, depInfo);
-          int loop_nest_level = getLoopDepth(L);
-          vector<int> res_mii_estimates = getResMIIEstimates(L, instruction_counts);
+        int line_number = getLineNumber(L);
+        int64_t trip_count = getTripCount(L, SE);
+        vector<float> instruction_counts = getInstructionCounts(L);
+        vector<float> dependency_info = getDependencyInfo(L, depInfo);
+        int loop_nest_level = getLoopDepth(L);
+        vector<int> res_mii_estimates = getResMIIEstimates(L, instruction_counts);
 
-          loop_features["loop_line_number"] = line_number;
-          loop_features["trip_count"] = trip_count;
+        loop_features["loop_line_number"] = line_number;
+        loop_features["trip_count"] = trip_count;
 
-          loop_features["alui"] = instruction_counts[ALUI];
-          loop_features["aluf"] = instruction_counts[ALUF];
-          loop_features["load"] = instruction_counts[LOAD];
-          loop_features["store"] = instruction_counts[STORE];
-          loop_features["mem"] = instruction_counts[MEM];
-          loop_features["branch"] = instruction_counts[BRANCH];
-          loop_features["other"] = instruction_counts[OTHER];
-          loop_features["instruction_sum"] = instruction_counts[INSTRUCTION_SUM];
-          loop_features["operand_sum"] = instruction_counts[OPERAND_SUM];
-          loop_features["array_reads"] = instruction_counts[ARRAY_READS];
-          loop_features["array_writes"] = instruction_counts[ARRAY_WRITES];
-          loop_features["array_accesses"] = instruction_counts[ARRAY_ACCESSES];
+        loop_features["alui"] = instruction_counts[ALUI];
+        loop_features["aluf"] = instruction_counts[ALUF];
+        loop_features["load"] = instruction_counts[LOAD];
+        loop_features["store"] = instruction_counts[STORE];
+        loop_features["mem"] = instruction_counts[MEM];
+        loop_features["branch"] = instruction_counts[BRANCH];
+        loop_features["other"] = instruction_counts[OTHER];
+        loop_features["instruction_sum"] = instruction_counts[INSTRUCTION_SUM];
+        loop_features["operand_sum"] = instruction_counts[OPERAND_SUM];
+        loop_features["array_reads"] = instruction_counts[ARRAY_READS];
+        loop_features["array_writes"] = instruction_counts[ARRAY_WRITES];
+        loop_features["array_accesses"] = instruction_counts[ARRAY_ACCESSES];
 
-          loop_features["max_inter_loop_dependency_distance"] = dependency_info[0];
-          loop_features["inter_loop_dependencies"] = dependency_info[1];
-          loop_features["has_inter_loop_carried_dependency"] = dependency_info[1] > 0;
-          loop_features["intra_loop_dependencies"] = dependency_info[2];
-          
-          loop_features["loop_nest_level"] = loop_nest_level;
+        loop_features["max_inter_loop_dependency_distance"] = dependency_info[0];
+        loop_features["max_inter_loop_dependency_distance_flow"] = dependency_info[1];
+        loop_features["max_inter_loop_dependency_distance_anti"] = dependency_info[2];
+        loop_features["max_inter_loop_dependency_distance"] = dependency_info[3];
+        loop_features["inter_loop_dependencies"] = dependency_info[4];
+        loop_features["inter_loop_dependencies_flow"] = dependency_info[5];
+        loop_features["inter_loop_dependencies_anti"] = dependency_info[6];
+        loop_features["inter_loop_dependencies_output"] = dependency_info[7];
 
-          loop_features["resmii_111"] = res_mii_estimates[0];
-          loop_features["resmii_211"] = res_mii_estimates[1];
-          loop_features["resmii_121"] = res_mii_estimates[2];
+        loop_features["intra_loop_dependencies"] = dependency_info[8];
+        loop_features["intra_loop_dependencies_flow"] = dependency_info[9];
+        loop_features["intra_loop_dependencies_anti"] = dependency_info[10];
+        loop_features["intra_loop_dependencies_output"] = dependency_info[11];
 
-          outer_features.push_back(loop_features);
-          return outer_features;
+        loop_features["has_inter_loop_carried_dependency"] = dependency_info[1] > 0;
+
+        loop_features["loop_nest_level"] = loop_nest_level;
+
+        loop_features["resmii_111"] = res_mii_estimates[0];
+        loop_features["resmii_211"] = res_mii_estimates[1];
+        loop_features["resmii_121"] = res_mii_estimates[2];
+
+        outer_features.push_back(loop_features);
+        return outer_features;
       }
-      
-      for(auto subL : L->getSubLoops()){
+
+      for (auto subL : L->getSubLoops())
+      {
         json sub_loop_features = get_loop_features(subL, LI, SE, depInfo);
-        for (auto& i : sub_loop_features) {
+        for (auto &i : sub_loop_features)
+        {
           outer_features.push_back(i);
         }
       }
@@ -344,29 +442,35 @@ namespace
       {
         json loop_features = get_loop_features(L, LI, SE, depInfo);
 
-        for (auto& i : loop_features) {
+        for (auto &i : loop_features)
+        {
           function_features.push_back(i);
         }
       }
 
       json running_json;
       std::ifstream inFile("features.json");
-      if (inFile) {
+      if (inFile)
+      {
         inFile >> running_json;
         inFile.close();
       }
 
-      for (auto i : function_features) {
+      for (auto i : function_features)
+      {
         running_json.push_back(i);
       }
-      
+
       errs() << function_features.dump(4);
       std::ofstream file("features.json");
-      if (file.is_open()) {
+      if (file.is_open())
+      {
         file << running_json.dump(4); // The '4' here is for pretty printing with an indent of 4 spaces
         file.close();
-      } else {
-          std::cerr << "Unable to open file";
+      }
+      else
+      {
+        std::cerr << "Unable to open file";
       }
 
       return PreservedAnalyses::all();
