@@ -6,6 +6,15 @@ import pdb
 import os
 import re
 from insert_timing_code import insert_timing_code
+import logging
+
+from tqdm import tqdm
+
+# Set up logging
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s',
+                    handlers=[logging.FileHandler("results.log"),
+                              logging.StreamHandler()])
 
 # Exceptions 
 class CompileException(Exception):
@@ -96,7 +105,7 @@ def remove_includes(filename_path):
         new_file.write(modified_content)
 
 def insert_timing(filename_path, LUF):
-    modified_code, line2loopnum = insert_timing_code("preprop.cpp", LUF)
+    modified_code, line2loopnum = insert_timing_code('preprop.cpp', LUF)
 
     # output modified code to timed.cpp
     with open('timed_src.cpp', 'w') as timed_file:
@@ -137,7 +146,7 @@ def run_and_aggregate_data(runs):
 
     run_data = {}
 
-    for i in range(runs):
+    for i in tqdm(range(runs), desc="Timing: "):
         # run output_exe and get stdcout
         process = subprocess.Popen("./output_exe", stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         stdout, stderr = process.communicate()
@@ -174,7 +183,7 @@ def time_code(filename_path, filename):
     remove_includes(filename_path)
 
     LUFs = [1, 2, 4, 8, 16, 32, 64]
-    runs = 1
+    runs = 10
 
     all_LUF_times = {}
 
@@ -188,24 +197,15 @@ def time_code(filename_path, filename):
     
     """
 
-    for LUF in LUFs:
-        try:
-            line2loopnum = insert_timing(filename_path, LUF)
-            loops_unrolled_std_out = compile_and_link()
-            run_data = run_and_aggregate_data(runs)
+    for LUF in tqdm(LUFs, desc="File Progress: "):
+        line2loopnum = insert_timing(filename_path, LUF)
+        loops_unrolled_std_out = compile_and_link()
+        run_data = run_and_aggregate_data(runs)
 
-            # TODO:
-            run_data = remove_loops_failed(loops_unrolled_std_out, run_data)
+        # TODO:
+        run_data = remove_loops_failed(loops_unrolled_std_out, run_data)
         
-        except CompileException as ce:
-            print(ce)
-            continue
-        except RuntimeException as re:
-            print(re)
-            continue
-        except Exception as e:
-            print(e)
-            continue
+        
 
         # Aggregate data to all_LUF_times
         for loop_num, times in run_data.items():
@@ -231,7 +231,6 @@ def time_code(filename_path, filename):
 def generate_dataset():
     """ Generates Dataset from scratch. """
 
-    
     # load json
     rerun = True
 
@@ -239,29 +238,39 @@ def generate_dataset():
         data = json.load(file)
 
     for filename in os.listdir("dataset"):
-
+        
         if not filename.endswith(".c"):
-            print(f"{filename} not a c file, skipping")
+            logging.info(f"{filename} not a c file, skipping")
             continue
 
         if filename in data:
             if not rerun:
-                print(f"{filename} filename has data and rerun not enabled, skipping")
+                logging.info(f"{filename} filename has data and rerun not enabled, skipping")
                 continue
 
         filename_path = os.path.join("dataset", filename)
 
-        print(f"---------- {filename} : extracting features ---------")
-        features = extract_features(filename_path)
+        try: 
+            logging.info(f"---------- {filename} : extracting features ---------")
+            features = extract_features(filename_path)
 
-        print(f"---------- {filename} : timing data ---------")
-        timing_data = time_code(filename_path, filename)
+            logging.info(f"---------- {filename} : timing data ---------")
+            timing_data = time_code(filename_path, filename)
 
-        data[filename] = [features, timing_data]
+            data[filename] = [features, timing_data]
 
-        # store data back to results.json
-        with open('results.json', 'w') as file:
-            json.dump(data, file, indent=4)
+            # store data back to results.json
+            with open('results.json', 'w') as file:
+                json.dump(data, file, indent=4)
+        except CompileException as ce:
+            logging.error(f'Compiler Error: {ce}')
+            continue
+        except RuntimeException as re:
+            logging.error(f'Runtime Error: {re}')
+            continue
+        except Exception as e:
+            logging.error(f'Error: {e}')
+            continue
 
 
     # compile data and export

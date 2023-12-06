@@ -92,3 +92,8 @@ def insert_timing_code(filename, loop_unroll_factor):
     modified_code = generator.visit(ast)
     return modified_code, {}
 
+
+if __name__ == "__main__":
+    modified_code, _ = insert_timing_code("test.c", 4)
+
+    print(modified_code)
