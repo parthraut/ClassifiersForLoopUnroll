@@ -15,7 +15,7 @@ int main()
   int temp;
   int a[100000];
   auto start_0 = std::chrono::high_resolution_clock::now();
-            #pragma clang loop unroll_count(64)
+            #pragma clang loop unroll_count(8)
   for (int i = 0; i < 100000; ++i)
   {
     a[i] = rand() % 100000;
@@ -30,7 +30,7 @@ int main()
   {
     j = i;
     auto start_1 = std::chrono::high_resolution_clock::now();
-            #pragma clang loop unroll_count(64)
+            #pragma clang loop unroll_count(8)
     while (a[j] < a[j - 1])
     {
       temp = a[j];

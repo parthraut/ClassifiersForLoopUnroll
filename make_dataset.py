@@ -134,7 +134,7 @@ def compile_and_link():
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     stdout, stderr = process.communicate()
 
-    print(stdout)
+    print(stderr)
     if process.returncode != 0:
         raise CompileException(stderr)
 
@@ -182,7 +182,7 @@ def time_code(filename_path, filename):
     # remove preprocessor directives, stores to preprop.cpp
     remove_includes(filename_path)
 
-    LUFs = [1, 2, 4, 8, 16, 32, 64]
+    LUFs = [1, 2, 3, 4, 5, 6, 7, 8]
     runs = 10
 
     all_LUF_times = {}
@@ -232,7 +232,7 @@ def generate_dataset():
     """ Generates Dataset from scratch. """
 
     # load json
-    rerun = True
+    rerun = False
 
     with open('results.json', 'r') as file:
         data = json.load(file)
@@ -246,7 +246,7 @@ def generate_dataset():
 
         if filename in data:
             if not rerun:
-                print(f"{filename} filename has data and rerun not enabled, skipping")
+                logging.info(f"{filename} filename has data and rerun not enabled, skipping")
                 continue
 
         filename_path = os.path.join("dataset", filename)

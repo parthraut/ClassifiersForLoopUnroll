@@ -4,9 +4,9 @@ clang++ -std=c++17 -O3 -Xclang -mllvm -Xclang -unroll-count=4 test.cpp '-o' outp
 
 
 # no unroll
-clang++ -std=c++17 -O3 -Xclang -Rpass=loop-unroll -Xclang -Rpass-missed=loop-unroll timed_src.cpp time.cpp -o output_exe
+clang++ -std=c++17 -O2 -Xclang -Rpass=loop-unroll -Xclang -Rpass-missed=loop-unroll timed_src.cpp time.cpp -o output_exe
 
-clang++ -std=c++17 -O3 -Xclang -Rpass=loop-unroll -Xclang -Rpass-missed=loop-unroll test_no_nested.cpp -o output_exe
+clang++ -std=c++17 -O2 -Xclang -Rpass=loop-unroll -Xclang -Rpass-missed=loop-unroll test_no_nested.cpp -o output_exe
 
 # CMake commands
 cmake ..    # must be in the build folder
@@ -92,7 +92,7 @@ llvm-project-build/bin/clang++ -I /home/praut/CompilersFinalProject/llvm-project
 clang++ -I /llvm-project/clang/include/ clang_pass/clang_pass.cpp
 
 
-clang++ -I/home/praut/CompilersFinalProject/external/json/include -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -L /usr/lib/gcc/x86_64-linux-gnu/11 -std=c++17 -O3 -Xclang -Rpass=loop-unroll -Xclang -Rpass-missed=loop-unroll timed_src.cpp
+clang++ -I/home/praut/CompilersFinalProject/external/json/include -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -L /usr/lib/gcc/x86_64-linux-gnu/11 -std=c++17 -O2 -Xclang -Rpass=loop-unroll -Xclang -Rpass-missed=loop-unroll timed_src.cpp
 
 # to test pass
 opt -disable-output -load-pass-plugin=./llvm_passes/build/featurepass/featurepass.so -passes="featurepass" test.ll
