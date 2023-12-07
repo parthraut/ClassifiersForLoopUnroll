@@ -41,12 +41,16 @@
 /*                                                                       */
 /*************************************************************************/
 
+#include <time.h>
+
 #ifdef DEBUG
 int cnt1, cnt2;
 #endif
 
 main()
 {
+  clock_t start_time = clock();
+
   int  i,j, temp, a[100000];
   for (int i = 0; i < 100000; ++i) {
       a[i] = rand() % 100000;
@@ -83,6 +87,9 @@ main()
     printf("Outer Loop : %d ,  Inner Loop : %d\n", cnt1, cnt2);
 #endif
 
+  clock_t end_time = clock();
+  double elapsed_time = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+  printf("Elapsed time: %f seconds\n", elapsed_time);
 }
 
 	

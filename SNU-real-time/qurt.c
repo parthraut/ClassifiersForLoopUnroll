@@ -26,13 +26,14 @@
 /*                                                                       */
 /*************************************************************************/
 /*                                                                       */
-/*  FILE: insertsort.c                                                   */
-/*  SOURCE : Public Domain Code                                          */
+/*  FILE: qurt.c                                                         */
+/*  SOURCE : Turbo C Programming for Engineering by Hyun Soo Ahn         */
 /*                                                                       */
 /*  DESCRIPTION :                                                        */
 /*                                                                       */
-/*     Insertion sort for 10 integer numbers.                            */
-/*     The integer array a[] is initialized in main function.            */
+/*     Root computation of quadratic equations.                          */
+/*     The real and imaginary parts of the solution are stored in the    */
+/*     array x1[] and x2[].                                              */
 /*                                                                       */
 /*  REMARK :                                                             */
 /*                                                                       */
@@ -41,48 +42,123 @@
 /*                                                                       */
 /*************************************************************************/
 
-#ifdef DEBUG
-int cnt1, cnt2;
-#endif
 
-main()
+
+/*
+** Benchmark Suite for Real-Time Applications, by Sung-Soo Lim
+**     
+**    III-7. qurt.c : the root computation of a quadratic equation
+**                 (from the book C Programming for EEs by Hyun Soon Ahn)
+*/
+
+
+double a[3], x1[2], x2[2];
+int flag;
+
+int  qurt();
+
+
+double fabs(double n)
 {
-  int  i,j, temp, a[100000];
-  for (int i = 0; i < 100000; ++i) {
-      a[i] = rand() % 100000;
-  }
+  double f;
 
-//   a[0] = 0;   /* assume all data is positive */
-//   a[1] = 11; a[2]=10;a[3]=9; a[4]=8; a[5]=7; a[6]=6; a[7]=5;
-//   a[8] =4; a[9]=3; a[10]=2;
-  i = 2;
-  while(i <= 100000){
-#ifdef DEBUG
-      cnt1++;
-#endif
-      j = i;
-#ifdef DEBUG
-	cnt2=0;
-#endif
-      while (a[j] < a[j-1]) 
-      {
-#ifdef DEBUG
-	cnt2++;
-#endif
-	temp = a[j];
-	a[j] = a[j-1];
-	a[j-1] = temp;
-	j--;
-      }
-#ifdef DEBUG
-	printf("Inner Loop Counts: %d\n", cnt2);
-#endif
-      i++;
-    }
-#ifdef DEBUG
-    printf("Outer Loop : %d ,  Inner Loop : %d\n", cnt1, cnt2);
-#endif
-
+  if (n >= 0) f = n;
+  else f = -n;
+  return f;
 }
 
-	
+double sqrt(val)
+double val;
+{
+  double x = val/10;
+
+  double dx;
+
+  double diff;
+  double min_tol = 0.00001;
+
+  int i, flag;
+
+  flag = 0;
+  if (val == 0 ) x = 0;
+  else {
+    for (i=1;i<20;i++)
+      {
+	if (!flag) {
+	  dx = (val - (x*x)) / (2.0 * x);
+	  x = x + dx;
+	  diff = val - (x*x);
+	  if (fabs(diff) <= min_tol) flag = 1;
+	}
+	else 
+	  x =x;
+      }
+  }
+  return (x);
+}
+
+
+void main()
+{
+
+	int flag;
+
+
+	a[0] =  1.0;
+	a[1] = -3.0;
+	a[2] =  2.0;
+
+	qurt();
+
+
+  a[0] =  1.0;
+	a[1] = -2.0;
+	a[2] =  1.0;
+
+  qurt();
+
+
+  a[0] =  1.0;
+	a[1] = -4.0;
+	a[2] =  8.0;
+
+  qurt();
+}
+
+int  qurt()
+{
+	double  d, w1, w2;
+
+	if(a[0] == 0.0) return(999);
+	d = a[1]*a[1] - 4 * a[0] * a[2];
+	w1 = 2.0 * a[0];
+	w2 = sqrt(fabs(d));
+	if(d > 0.0)
+	{
+		 flag = 1;
+		 x1[0] = (-a[1] + w2) / w1;
+		 x1[1] = 0.0;
+		 x2[0] = (-a[1] - w2) / w1;
+		 x2[1] = 0.0;
+		 return(0);
+	}
+	else if(d == 0.0)
+	{
+		 flag = 0;
+		 x1[0] = -a[1] / w1;
+		 x1[1] = 0.0;
+		 x2[0] = x1[0];
+		 x2[1] = 0.0;
+		 return(0);
+	}
+	else
+	{
+		 flag = -1;
+		 w2 /= w1;
+		 x1[0] = -a[1] / w1;
+		 x1[1] = w2;
+		 x2[0] = x1[0];
+		 x2[1] = -w2;
+		 return(0);
+	}
+}

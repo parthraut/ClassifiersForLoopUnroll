@@ -26,13 +26,13 @@
 /*                                                                       */
 /*************************************************************************/
 /*                                                                       */
-/*  FILE: insertsort.c                                                   */
-/*  SOURCE : Public Domain Code                                          */
+/*  FILE: qsort-exam.c                                                   */
+/*  SOURCE : Numerical Recipes in C - The Second Edition                 */
 /*                                                                       */
 /*  DESCRIPTION :                                                        */
 /*                                                                       */
-/*     Insertion sort for 10 integer numbers.                            */
-/*     The integer array a[] is initialized in main function.            */
+/*     Non-recursive version of quick sort algorithm.                    */
+/*     This example sorts 20 floating point numbers, arr[].              */
 /*                                                                       */
 /*  REMARK :                                                             */
 /*                                                                       */
@@ -41,48 +41,91 @@
 /*                                                                       */
 /*************************************************************************/
 
-#ifdef DEBUG
-int cnt1, cnt2;
-#endif
+#include <time.h>
+
+#define SWAP(a,b) temp=(a);(a)=(b);(b)=temp;
+#define M 7
+#define NSTACK 50
+
+#define SIZE 10000000
+
+// float arr[20] = {
+//   5, 4, 10.3, 1.1, 5.7, 100, 231, 111, 49.5, 99,
+//   10, 150, 222.22, 101, 77, 44, 35, 20.54, 99.99, 88.88
+// };
+float arr[SIZE];
+
+int istack[SIZE*5];
+
+void sort(unsigned long n)
+{
+	unsigned long i,ir=n,j,k,l=1;
+	int jstack=0;
+	int flag;
+	float a,temp;
+
+	flag = 0;
+	for (;;) {
+		if (ir-l < M) {
+			for (j=l+1;j<=ir;j++) {
+				a=arr[j];
+				for (i=j-1;i>=l;i--) {
+					if (arr[i] <= a) break;
+					arr[i+1]=arr[i];
+				}
+				arr[i+1]=a;
+			}
+			if (jstack == 0) break;
+			ir=istack[jstack--];
+			l=istack[jstack--];
+		} else {
+			k=(l+ir) >> 1;
+			SWAP(arr[k],arr[l+1])
+			if (arr[l] > arr[ir]) {
+				SWAP(arr[l],arr[ir])
+			}
+			if (arr[l+1] > arr[ir]) {
+				SWAP(arr[l+1],arr[ir])
+			}
+			if (arr[l] > arr[l+1]) {
+				SWAP(arr[l],arr[l+1])
+			}
+			i=l+1;
+			j=ir;
+			a=arr[l+1];
+			for (;;) {
+				i++; while (arr[i] < a) i++;
+				j--; while (arr[j] > a) j--;
+				if (j < i) break;
+				SWAP(arr[i],arr[j]);
+			}
+			arr[l+1]=arr[j];
+			arr[j]=a;
+			jstack += 2;
+
+			if (ir-i+1 >= j-l) {
+				istack[jstack]=ir;
+				istack[jstack-1]=i;
+				ir=j-1;
+			} else {
+				istack[jstack]=j-1;
+				istack[jstack-1]=l;
+				l=i;
+			}
+		}
+	}
+}
 
 main()
 {
-  int  i,j, temp, a[100000];
-  for (int i = 0; i < 100000; ++i) {
-      a[i] = rand() % 100000;
-  }
+	clock_t start_time = clock();
+	for (int i = 0; i < SIZE; ++i) {
+		arr[i] = rand() % SIZE;
+	}
 
-//   a[0] = 0;   /* assume all data is positive */
-//   a[1] = 11; a[2]=10;a[3]=9; a[4]=8; a[5]=7; a[6]=6; a[7]=5;
-//   a[8] =4; a[9]=3; a[10]=2;
-  i = 2;
-  while(i <= 100000){
-#ifdef DEBUG
-      cnt1++;
-#endif
-      j = i;
-#ifdef DEBUG
-	cnt2=0;
-#endif
-      while (a[j] < a[j-1]) 
-      {
-#ifdef DEBUG
-	cnt2++;
-#endif
-	temp = a[j];
-	a[j] = a[j-1];
-	a[j-1] = temp;
-	j--;
-      }
-#ifdef DEBUG
-	printf("Inner Loop Counts: %d\n", cnt2);
-#endif
-      i++;
-    }
-#ifdef DEBUG
-    printf("Outer Loop : %d ,  Inner Loop : %d\n", cnt1, cnt2);
-#endif
-
+  sort(SIZE);
+  clock_t end_time = clock();
+    double elapsed_time = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+    printf("Elapsed time: %f seconds\n", elapsed_time);
 }
 
-	

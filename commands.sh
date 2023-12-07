@@ -92,7 +92,7 @@ llvm-project-build/bin/clang++ -I /home/praut/CompilersFinalProject/llvm-project
 clang++ -I /llvm-project/clang/include/ clang_pass/clang_pass.cpp
 
 
-clang++ -I/home/praut/CompilersFinalProject/external/json/include -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -L /usr/lib/gcc/x86_64-linux-gnu/11 -std=c++17 -O3 -Xclang -Rpass=loop-unroll -Xclang -Rpass-missed=loop-unroll preprocessed/simple_test/1_simple_test.cpp time.cpp -o output_exe
+clang++ -I/home/praut/CompilersFinalProject/external/json/include -I/usr/include/c++/11 -I/usr/include/x86_64-linux-gnu/c++/11 -L /usr/lib/gcc/x86_64-linux-gnu/11 -std=c++17 -O3 -Xclang -Rpass=loop-unroll -Xclang -Rpass-missed=loop-unroll timed_src.cpp
 
 # to test pass
 opt -disable-output -load-pass-plugin=./llvm_passes/build/featurepass/featurepass.so -passes="featurepass" test.ll

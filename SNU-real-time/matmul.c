@@ -26,13 +26,12 @@
 /*                                                                       */
 /*************************************************************************/
 /*                                                                       */
-/*  FILE: insertsort.c                                                   */
+/*  FILE: matmul.c                                                       */
 /*  SOURCE : Public Domain Code                                          */
 /*                                                                       */
 /*  DESCRIPTION :                                                        */
 /*                                                                       */
-/*     Insertion sort for 10 integer numbers.                            */
-/*     The integer array a[] is initialized in main function.            */
+/*     Matrix multiplication for 5x5 integer matrices.                   */
 /*                                                                       */
 /*  REMARK :                                                             */
 /*                                                                       */
@@ -41,48 +40,59 @@
 /*                                                                       */
 /*************************************************************************/
 
-#ifdef DEBUG
-int cnt1, cnt2;
-#endif
+#include <time.h>
 
-main()
+#define SIZE 1000
+
+// int a[SIZE+1][SIZE+1] = { 0,0,0,0,0,0,
+// 			    0,0,9,4,7,9,
+// 			    0,12,14,15,16,11,
+// 			    0,2,3,4,5,6,
+// 			    0,4,3,2,1,2,
+// 			    0,2,7,6,4,9 };
+// int b[SIZE+1][SIZE+1] = { 0,0,0,0,0,0,
+// 			    0,0,9,4,7,9,
+// 			    0,12,14,15,16,11,
+// 			    0,2,3,4,5,6,
+// 			    0,4,3,2,1,2,
+// 			    0,2,7,6,4,9 };
+// int c[SIZE+1][SIZE+1];
+
+int a[SIZE+1][SIZE+1];
+int b[SIZE+1][SIZE+1];
+int c[SIZE+1][SIZE+1];
+
+matmul(a,b,c)
+  int a[SIZE+1][SIZE+1], b[SIZE+1][SIZE+1], c[SIZE+1][SIZE+1];
 {
-  int  i,j, temp, a[100000];
-  for (int i = 0; i < 100000; ++i) {
-      a[i] = rand() % 100000;
-  }
+	for (int i = 0; i < SIZE; ++i) {
+		for (int j = 0; j < SIZE; ++j) {
+			a[i][j] = rand() % SIZE;
+			b[i][j] = rand() % SIZE;
+		}
+	}
 
-//   a[0] = 0;   /* assume all data is positive */
-//   a[1] = 11; a[2]=10;a[3]=9; a[4]=8; a[5]=7; a[6]=6; a[7]=5;
-//   a[8] =4; a[9]=3; a[10]=2;
-  i = 2;
-  while(i <= 100000){
-#ifdef DEBUG
-      cnt1++;
-#endif
-      j = i;
-#ifdef DEBUG
-	cnt2=0;
-#endif
-      while (a[j] < a[j-1]) 
-      {
-#ifdef DEBUG
-	cnt2++;
-#endif
-	temp = a[j];
-	a[j] = a[j-1];
-	a[j-1] = temp;
-	j--;
-      }
-#ifdef DEBUG
-	printf("Inner Loop Counts: %d\n", cnt2);
-#endif
-      i++;
-    }
-#ifdef DEBUG
-    printf("Outer Loop : %d ,  Inner Loop : %d\n", cnt1, cnt2);
-#endif
+
+  int i,j,k;
+
+IL0:  for(i=1;i<=SIZE;i++)
+  IL1: for(j=1;j<=SIZE;j++)
+      c[i][j] = 0;
+
+CL0:  for(i=1;i<=SIZE;i++)
+ CL1:   for(j=1;j<=SIZE;j++)
+  CL2:   for(k=1;k<=SIZE;k++)
+	c[i][j] += a[i][k] * b[k][j];
 
 }
 
-	
+main()
+{
+	clock_t start_time = clock();
+    matmul(a,b,c);
+	clock_t end_time = clock();
+    double elapsed_time = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+    printf("Elapsed time: %f seconds\n", elapsed_time);
+}
+	 
+

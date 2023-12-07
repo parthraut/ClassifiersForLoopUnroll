@@ -26,13 +26,17 @@
 /*                                                                       */
 /*************************************************************************/
 /*                                                                       */
-/*  FILE: insertsort.c                                                   */
-/*  SOURCE : Public Domain Code                                          */
+/*  FILE: ludcmp.c                                                       */
+/*  SOURCE : Turbo C Programming for Engineering                         */
 /*                                                                       */
 /*  DESCRIPTION :                                                        */
 /*                                                                       */
-/*     Insertion sort for 10 integer numbers.                            */
-/*     The integer array a[] is initialized in main function.            */
+/*     Simultaneous linear equations by LU decomposition.                */
+/*     The arrays a[][] and b[] are input and the array x[] is output    */
+/*     row vector.                                                       */
+/*     The variable n is the number of equations.                        */
+/*     The input arrays are initialized in function main.                */
+/*                                                                       */
 /*                                                                       */
 /*  REMARK :                                                             */
 /*                                                                       */
@@ -41,48 +45,105 @@
 /*                                                                       */
 /*************************************************************************/
 
-#ifdef DEBUG
-int cnt1, cnt2;
-#endif
+#include <time.h>
 
-main()
+
+
+
+/*
+** Benchmark Suite for Real-Time Applications, by Sung-Soo Lim
+**     
+**    III-4. ludcmp.c : Simultaneous Linear Equations by LU Decomposition
+**                 (from the book C Programming for EEs by Hyun Soon Ahn)
+*/
+
+
+
+double a[10000][10000], b[10000], x[10000];
+
+int ludcmp(int nmax, int n, double eps);
+
+
+static double fabs(double n)
 {
-  int  i,j, temp, a[100000];
-  for (int i = 0; i < 100000; ++i) {
-      a[i] = rand() % 100000;
-  }
+  double f;
 
-//   a[0] = 0;   /* assume all data is positive */
-//   a[1] = 11; a[2]=10;a[3]=9; a[4]=8; a[5]=7; a[6]=6; a[7]=5;
-//   a[8] =4; a[9]=3; a[10]=2;
-  i = 2;
-  while(i <= 100000){
-#ifdef DEBUG
-      cnt1++;
-#endif
-      j = i;
-#ifdef DEBUG
-	cnt2=0;
-#endif
-      while (a[j] < a[j-1]) 
-      {
-#ifdef DEBUG
-	cnt2++;
-#endif
-	temp = a[j];
-	a[j] = a[j-1];
-	a[j-1] = temp;
-	j--;
-      }
-#ifdef DEBUG
-	printf("Inner Loop Counts: %d\n", cnt2);
-#endif
-      i++;
-    }
-#ifdef DEBUG
-    printf("Outer Loop : %d ,  Inner Loop : %d\n", cnt1, cnt2);
-#endif
-
+  if (n >= 0) f = n;
+  else f = -n;
+  return f;
 }
 
+void main()
+{
+	clock_t start_time = clock();
+
+	int i, j, nmax = 10000, n = 10000, chkerr;
+	double eps, w;
+
+	eps = 1.0e-6;
+
+	for(i = 0; i <= n; i++)
+	{
+			w = 0.0;
+			for(j = 0; j <= n; j++)
+			{
+					a[i][j] = (i + 1) + (j + 1);
+					if(i == j) a[i][j] *= 10.0;
+					w += a[i][j];
+			}
+			b[i] = w;
+	}
+
+	chkerr = ludcmp(nmax, n, eps);
+
+	clock_t end_time = clock();
+    double elapsed_time = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+    printf("Elapsed time: %f seconds\n", elapsed_time);
+}
+
+int ludcmp(int nmax, int n, double eps)
+{
+
+	int i, j, k;
+	double w, y[100];
+
+	if(n > 99 || eps <= 0.0) return(999);
+	for(i = 0; i < n; i++)
+	{
+			if(fabs(a[i][i]) <= eps) return(1);
+			for(j = i+1; j <= n; j++)
+			{
+			  w = a[j][i];
+			  if(i != 0)
+			    for(k = 0; k < i; k++)
+			      w -= a[j][k] * a[k][i];
+			  a[j][i] = w / a[i][i];
+			}
+			for(j = i+1; j <= n; j++)
+			  {
+			    w = a[i+1][j];
+			    for(k = 0; k <= i; k++)
+			      w -= a[i+1][k] * a[k][j];
+			    a[i+1][j] = w;
+			  }
+	}
+	y[0] = b[0];
+	for(i = 1; i <= n; i++)
+	  {
+	    w = b[i];
+	    for(j = 0; j < i; j++)
+	      w -= a[i][j] * y[j];
+	    y[i] = w;
+	  }
+	x[n] = y[n] / a[n][n];
+	for(i = n-1; i >= 0; i--)
+	  {
+	    w = y[i];
+	    for(j = i+1; j <= n; j++)
+	      w -= a[i][j] * x[j];
+	    x[i] = w / a[i][i] ;
+	  }
+	return(0);
 	
+}
+

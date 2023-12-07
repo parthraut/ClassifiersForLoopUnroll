@@ -123,10 +123,9 @@ def compile_and_link():
             "-I/usr/include/c++/11",
             "-I/usr/include/x86_64-linux-gnu/c++/11",
             "-L/usr/lib/gcc/x86_64-linux-gnu/11",
-            "-std=c++17",
-            "-O3",
+            "-O2",
+            "-funroll-loops",
             "-Xclang", "-Rpass=loop-unroll",
-            "-Xclang", "-Rpass-missed=loop-unroll",
             "timed_src.cpp",
             "time.cpp",
             "-o", "output_exe"
@@ -135,6 +134,7 @@ def compile_and_link():
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     stdout, stderr = process.communicate()
 
+    print(stdout)
     if process.returncode != 0:
         raise CompileException(stderr)
 
@@ -238,14 +238,15 @@ def generate_dataset():
         data = json.load(file)
 
     for filename in os.listdir("dataset"):
-        
+        logging.info(f"---------- {filename} : Reading file... ---------")
+
         if not filename.endswith(".c"):
-            logging.info(f"{filename} not a c file, skipping")
+            print(f"{filename} not a c file, skipping")
             continue
 
         if filename in data:
             if not rerun:
-                logging.info(f"{filename} filename has data and rerun not enabled, skipping")
+                print(f"{filename} filename has data and rerun not enabled, skipping")
                 continue
 
         filename_path = os.path.join("dataset", filename)
@@ -257,11 +258,19 @@ def generate_dataset():
             logging.info(f"---------- {filename} : timing data ---------")
             timing_data = time_code(filename_path, filename)
 
+            
+
+            if filename in data.keys():
+                logging.info(f"---------- {filename} : replacing data in results.json ---------")
+            else:
+                logging.info(f"---------- {filename} : adding data to results.json ---------")
+
             data[filename] = [features, timing_data]
 
             # store data back to results.json
             with open('results.json', 'w') as file:
                 json.dump(data, file, indent=4)
+
         except CompileException as ce:
             logging.error(f'Compiler Error: {ce}')
             continue

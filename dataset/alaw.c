@@ -145,7 +145,8 @@ void decode(int *out, int *in, int len)
  * @param len length of test array
  * @returns void
  */
-static void test(int *pcm, int *coded, int *decoded, int len)
+// static void test(int *pcm, int *coded, int *decoded, int len)
+void test(int *pcm, int *coded, int *decoded, int len)
 {
     /* run encode */
     encode(coded, pcm, len);
@@ -193,7 +194,7 @@ int main(int argc, char *argv[])
     /* output pcm decoded by decode() from coded[LEN] */
     int decoded[LEN];
 
-    // test(pcm, coded, decoded, LEN);  // run self-test implementations
+    test(pcm, coded, decoded, LEN);  // run self-test implementations
 
     /* print test pcm inputs */
     // printf("inputs: ");

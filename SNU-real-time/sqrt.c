@@ -26,13 +26,12 @@
 /*                                                                       */
 /*************************************************************************/
 /*                                                                       */
-/*  FILE: insertsort.c                                                   */
+/*  FILE: sqrt.c                                                         */
 /*  SOURCE : Public Domain Code                                          */
 /*                                                                       */
 /*  DESCRIPTION :                                                        */
 /*                                                                       */
-/*     Insertion sort for 10 integer numbers.                            */
-/*     The integer array a[] is initialized in main function.            */
+/*     Square root function implemented by Taylor series.                */
 /*                                                                       */
 /*  REMARK :                                                             */
 /*                                                                       */
@@ -41,48 +40,54 @@
 /*                                                                       */
 /*************************************************************************/
 
-#ifdef DEBUG
-int cnt1, cnt2;
-#endif
+#include <time.h>
 
-main()
+double fabs(double n)
 {
-  int  i,j, temp, a[100000];
-  for (int i = 0; i < 100000; ++i) {
-      a[i] = rand() % 100000;
-  }
+  double f;
 
-//   a[0] = 0;   /* assume all data is positive */
-//   a[1] = 11; a[2]=10;a[3]=9; a[4]=8; a[5]=7; a[6]=6; a[7]=5;
-//   a[8] =4; a[9]=3; a[10]=2;
-  i = 2;
-  while(i <= 100000){
-#ifdef DEBUG
-      cnt1++;
-#endif
-      j = i;
-#ifdef DEBUG
-	cnt2=0;
-#endif
-      while (a[j] < a[j-1]) 
-      {
-#ifdef DEBUG
-	cnt2++;
-#endif
-	temp = a[j];
-	a[j] = a[j-1];
-	a[j-1] = temp;
-	j--;
-      }
-#ifdef DEBUG
-	printf("Inner Loop Counts: %d\n", cnt2);
-#endif
-      i++;
-    }
-#ifdef DEBUG
-    printf("Outer Loop : %d ,  Inner Loop : %d\n", cnt1, cnt2);
-#endif
-
+  if (n >= 0) f = n;
+  else f = -n;
+  return f;
 }
 
-	
+float sqrt(val)
+float val;
+{
+  float x = val/10;
+
+  float dx;
+
+  double diff;
+  double min_tol = 0.0000001;
+
+  int i, flag;
+
+  flag = 0;
+  if (val == 0 ) x = 0;
+  else {
+    for (i=1;i<100;i++)
+      {
+	if (!flag) {
+	  dx = (val - (x*x)) / (2.0 * x);
+	  x = x + dx;
+	  diff = val - (x*x);
+	  if (fabs(diff) <= min_tol) flag = 1;
+	}
+	else 
+	  x =x;
+      }
+  }
+  return (x);
+}
+
+int main(void)
+{
+  clock_t start_time = clock();
+  float x=1234;
+  sqrt(x);
+  clock_t end_time = clock();
+	double elapsed_time = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+	printf("Elapsed time: %f seconds\n", elapsed_time);
+  return 0;
+}

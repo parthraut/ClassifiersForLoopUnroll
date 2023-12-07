@@ -26,13 +26,15 @@
 /*                                                                       */
 /*************************************************************************/
 /*                                                                       */
-/*  FILE: insertsort.c                                                   */
-/*  SOURCE : Public Domain Code                                          */
+/*  FILE: fft1k.c                                                        */
+/*  SOURCE : C Algorithms for Real-Time DSP by P. M. Embree              */
 /*                                                                       */
 /*  DESCRIPTION :                                                        */
 /*                                                                       */
-/*     Insertion sort for 10 integer numbers.                            */
-/*     The integer array a[] is initialized in main function.            */
+/*     FFT (Fast Fourier Transform) for complex number arrays.           */
+/*     The input complex number array is w[] and the result is stored in */
+/*     the array x[].                                                    */
+/*     The array w[] is initialized in the function init_w.              */
 /*                                                                       */
 /*  REMARK :                                                             */
 /*                                                                       */
@@ -41,48 +43,117 @@
 /*                                                                       */
 /*************************************************************************/
 
-#ifdef DEBUG
-int cnt1, cnt2;
-#endif
+#include <time.h>
 
-main()
+typedef struct {
+    float real, imag;
+} COMPLEX;
+
+void fft_c(int n);
+void init_w(int n);
+
+#define PI 3.14159265358979323846
+int n = 10000000;
+COMPLEX x[10000000],w[10000000];
+
+
+float fabs(float n)
 {
-  int  i,j, temp, a[100000];
-  for (int i = 0; i < 100000; ++i) {
-      a[i] = rand() % 100000;
-  }
+  float f;
 
-//   a[0] = 0;   /* assume all data is positive */
-//   a[1] = 11; a[2]=10;a[3]=9; a[4]=8; a[5]=7; a[6]=6; a[7]=5;
-//   a[8] =4; a[9]=3; a[10]=2;
-  i = 2;
-  while(i <= 100000){
-#ifdef DEBUG
-      cnt1++;
-#endif
-      j = i;
-#ifdef DEBUG
-	cnt2=0;
-#endif
-      while (a[j] < a[j-1]) 
-      {
-#ifdef DEBUG
-	cnt2++;
-#endif
-	temp = a[j];
-	a[j] = a[j-1];
-	a[j-1] = temp;
-	j--;
-      }
-#ifdef DEBUG
-	printf("Inner Loop Counts: %d\n", cnt2);
-#endif
-      i++;
-    }
-#ifdef DEBUG
-    printf("Outer Loop : %d ,  Inner Loop : %d\n", cnt1, cnt2);
-#endif
-
+  if (n >= 0) f = n;
+  else f = -n;
+  return f;
 }
 
-	
+
+float sin(rad)
+float rad;
+{
+  float app;
+
+  float diff;
+  int inc = 1;
+
+  while (rad > 2*PI)
+	rad -= 2*PI;
+  while (rad < -2*PI)
+    rad += 2*PI;
+  app = diff = rad;
+   diff = (diff * (-(rad*rad))) /
+      ((2.0 * inc) * (2.0 * inc + 1.0));
+    app = app + diff;
+    inc++;
+  while(fabs(diff) >= 0.00001) {
+    diff = (diff * (-(rad*rad))) /
+      ((2.0 * inc) * (2.0 * inc + 1.0));
+    app = app + diff;
+    inc++;
+  }
+
+  return(app);
+}
+
+float cos(rad)
+float rad;
+{
+  float sin();
+
+  return (sin (PI / 2.0 - rad));
+}
+
+    
+
+void main()
+{
+    clock_t start_time = clock();
+    int i;
+
+    init_w(n);
+
+    x[0].real = 1.0;
+    fft_c(n);
+    clock_t end_time = clock();
+    double elapsed_time = (double)(end_time - start_time) / CLOCKS_PER_SEC;
+    printf("Elapsed time: %f seconds\n", elapsed_time);
+}
+
+void fft_c(int n)
+{
+    COMPLEX u,temp,tm;
+    COMPLEX *xi,*xip,*wptr;
+
+    int i,j,le,windex;
+
+/* start fft */
+
+    windex = 1;
+    for(le=n/2 ; le > 0 ; le/=2) {
+        wptr = w;
+        for (j = 0 ; j < le ; j++) {
+            u = *wptr;
+            for (i = j ; i < n ; i = i + 2*le) {
+                xi = x + i;
+		xip = xi + le;
+                temp.real = xi->real + xip->real;
+                temp.imag = xi->imag + xip->imag;
+                tm.real = xi->real - xip->real;
+                tm.imag = xi->imag - xip->imag;             
+                xip->real = tm.real*u.real - tm.imag*u.imag;
+                xip->imag = tm.real*u.imag + tm.imag*u.real;
+                *xi = temp;
+            }
+            wptr = wptr + windex;
+        }
+        windex = 2*windex;
+    }            
+}
+void init_w(int n)
+{
+    int i;
+    float a = 2.0*PI/n;
+    for(i = 0 ; i < n ; i++) {
+        w[i].real = cos(i*a);
+        w[i].imag = sin(i*a);
+    }
+}
