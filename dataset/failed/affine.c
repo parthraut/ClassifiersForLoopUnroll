@@ -44,6 +44,9 @@ typedef struct
  *
  * @returns the modular multiplicative inverse of `a` mod `m`
  */
+
+struct div_t;
+
 int modular_multiplicative_inverse(unsigned int a, unsigned int m)
 {
     int x[2] = {1, 0};

@@ -1,9 +1,9 @@
-
-
-
-
-
-
+#include <stdint.h>
+#include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h> //Header file for sleep(). man 3 sleep for details.
+#include <pthread.h>
 
 #define ID1 0
 #define ID2 100

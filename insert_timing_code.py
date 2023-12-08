@@ -93,6 +93,66 @@ def insert_timing_code(filename, loop_unroll_factor):
     return modified_code, {}
 
 
+# Takes in filename of C program, parses it and inserts timing code, and returns modified C code
+def insert_timing_code_cpp(filename, loop_unroll_factor):
+    ast = parse_file(filename, use_cpp=True, cpp_args=r'-Iexternal/pycparser/utils/fake_libc_include')
+    visitor = Visitor()
+    visitor.visit(ast)
+
+    timed_loop_counter = 0
+
+    # Insert includes and externs at the top of the file
+    includes_and_directives = f"""
+    #include <bits/stdc++.h>
+    #include <chrono>
+    #include <cstdint>
+    #include <cstdlib>
+    extern void add_to_loop(uint64_t, uint64_t);
+    extern void print_times();
+    extern void init_loops(int);
+    int BEGIN_FILE_LINE;"""
+    ast.ext.insert(0, TimingCode(includes_and_directives))
+
+    # Insert timing code before and after each loop
+    for node, child in visitor.timing_loops:
+        if isinstance(node, c_ast.Compound):
+
+            before_timed_loop = f"""auto start_{timed_loop_counter} = std::chrono::high_resolution_clock::now();
+            #pragma clang loop unroll_count({loop_unroll_factor})"""
+
+            after_timed_loop = f"""auto end_{timed_loop_counter} = std::chrono::high_resolution_clock::now();
+            auto duration_{timed_loop_counter} = std::chrono::duration_cast<std::chrono::nanoseconds>(end_{timed_loop_counter} - start_{timed_loop_counter});
+            add_to_loop({timed_loop_counter}, duration_{timed_loop_counter}.count());"""
+
+
+            index = node.block_items.index(child)
+            node.block_items.insert(index, TimingCode(before_timed_loop))
+            node.block_items.insert(index+2, TimingCode(after_timed_loop))
+            timed_loop_counter += 1
+
+    # Insert nontiming code before and after each loop
+    for node, child in visitor.nontiming_loops:
+        if isinstance(node, c_ast.Compound):
+            before_untimed_loop = f"""#pragma clang loop unroll(disable)"""
+
+            index = node.block_items.index(child)
+            node.block_items.insert(index, TimingCode(before_untimed_loop))
+
+    # Insert atexit(print_times) at the beginning of main
+    for node in ast.ext:
+        if isinstance(node, c_ast.FuncDef):
+            if node.decl.name == 'main':
+                node.body.block_items.insert(0, TimingCode(f"init_loops({len(visitor.timing_loops)});"))
+                node.body.block_items.insert(0, TimingCode("atexit(print_times);"))
+                break
+
+    # Convert the AST back to C code
+    generator = CustomPrint()
+    modified_code = generator.visit(ast)
+    return modified_code, {}
+
+
+
 if __name__ == "__main__":
     modified_code, _ = insert_timing_code("test.c", 4)
 

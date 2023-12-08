@@ -26,16 +26,16 @@
 /*                                                                       */
 /*************************************************************************/
 /*                                                                       */
-/*  FILE: ludcmp.c                                                       */
-/*  SOURCE : Turbo C Programming for Engineering                         */
+/*  FILE: fft1.c                                                         */
+/*  SOURCE : Turbo C Programming for Engineering by Hyun Soon Ahn        */
 /*                                                                       */
 /*  DESCRIPTION :                                                        */
 /*                                                                       */
-/*     Simultaneous linear equations by LU decomposition.                */
-/*     The arrays a[][] and b[] are input and the array x[] is output    */
-/*     row vector.                                                       */
-/*     The variable n is the number of equations.                        */
-/*     The input arrays are initialized in function main.                */
+/*     FFT using Cooly-Turkey algorithm.                                 */
+/*     There are two inputs, ar[] and ai[]. ar[] is real number parts    */
+/*     of input array and the ai[] is imaginary number parts of input.   */
+/*     The function fft1 process FFT or inverse FFT according to the    .*/
+/*     parameter flag. (FFT with flag=0, inverse FFT with flag=1).       */
 /*                                                                       */
 /*                                                                       */
 /*  REMARK :                                                             */
@@ -45,23 +45,15 @@
 /*                                                                       */
 /*************************************************************************/
 
+#define PI 3.14159
+#define M_PI 3.14159
 
+double ar[10000000];
+double ai[10000000] = {0.,  };
 
-/*
-** Benchmark Suite for Real-Time Applications, by Sung-Soo Lim
-**     
-**    III-4. ludcmp.c : Simultaneous Linear Equations by LU Decomposition
-**                 (from the book C Programming for EEs by Hyun Soon Ahn)
-*/
+int fft1(int n, int flag);
 
-
-
-double a[10000][10000], b[10000], x[10000];
-
-int ludcmp(int nmax, int n, double eps);
-
-
-static double fabs(double n)
+double fabs(double n)
 {
   double f;
 
@@ -70,71 +62,153 @@ static double fabs(double n)
   return f;
 }
 
+double log(double n)
+{
+  return(4.5);
+}
+
+
+double sin(double rad)
+{
+  double app;
+
+  double diff;
+  int inc = 1;
+
+  while (rad > 2*PI)
+	rad -= 2*PI;
+  while (rad < -2*PI)
+    rad += 2*PI;
+  app = diff = rad;
+   diff = (diff * (-(rad*rad))) /
+      ((2.0 * inc) * (2.0 * inc + 1.0));
+    app = app + diff;
+    inc++;
+  while(fabs(diff) >= 0.00001) {
+    diff = (diff * (-(rad*rad))) /
+      ((2.0 * inc) * (2.0 * inc + 1.0));
+    app = app + diff;
+    inc++;
+  }
+
+  return(app);
+}
+
+
+double cos(double rad)
+{
+
+  return (sin (PI / 2.0 - rad));
+}
+
+
 int main()
 {
-	int i, j, nmax = 10000, n = 10000, chkerr;
-	double eps, w;
 
-	eps = 1.0e-6;
+	int  i, n = 1000000, flag, chkerr;
 
-	for(i = 0; i <= n; i++)
-	{
-			w = 0.0;
-			for(j = 0; j <= n; j++)
-			{
-					a[i][j] = (i + 1) + (j + 1);
-					if(i == j) a[i][j] *= 10.0;
-					w += a[i][j];
-			}
-			b[i] = w;
-	}
 
-	chkerr = ludcmp(nmax, n, eps);
+	/* ar  */
+	for(i = 0; i < n; i++)
+	  ar[i] = cos(2*M_PI*i/n);
+
+	/* forward fft */
+	flag = 0;
+	chkerr = fft1(n, flag);
+
+	/* inverse fft */
+	flag = 1;
+	chkerr = fft1(n, flag);
+
 }
 
-int ludcmp(int nmax, int n, double eps)
+
+
+int fft1(int n, int flag)
 {
 
-	int i, j, k;
-	double w, y[100];
+	 int i, j, k, it, xp, xp2, j1, j2, iter;
+	 double sign, w, wr, wi, dr1, dr2, di1, di2, tr, ti, arg;
 
-	if(n > 99 || eps <= 0.0) return(999);
-	for(i = 0; i < n; i++)
-	{
-			if(fabs(a[i][i]) <= eps) return(1);
-			for(j = i+1; j <= n; j++)
-			{
-			  w = a[j][i];
-			  if(i != 0)
-			    for(k = 0; k < i; k++)
-			      w -= a[j][k] * a[k][i];
-			  a[j][i] = w / a[i][i];
-			}
-			for(j = i+1; j <= n; j++)
-			  {
-			    w = a[i+1][j];
-			    for(k = 0; k <= i; k++)
-			      w -= a[i+1][k] * a[k][j];
-			    a[i+1][j] = w;
-			  }
-	}
-	y[0] = b[0];
-	for(i = 1; i <= n; i++)
-	  {
-	    w = b[i];
-	    for(j = 0; j < i; j++)
-	      w -= a[i][j] * y[j];
-	    y[i] = w;
-	  }
-	x[n] = y[n] / a[n][n];
-	for(i = n-1; i >= 0; i--)
-	  {
-	    w = y[i];
-	    for(j = i+1; j <= n; j++)
-	      w -= a[i][j] * x[j];
-	    x[i] = w / a[i][i] ;
-	  }
-	return(0);
-	
+	 if(n < 2) return(999);
+	 iter = log((double)n)/log(2.0);
+	 j = 1;
+#ifdef DEBUG 
+	printf("iter=%d\n",iter);
+#endif
+	 for(i = 0; i < iter; i++)
+	   j *= 2;
+	 if(fabs(n-j) > 1.0e-6)
+	   return(1);
+
+	 /*  Main FFT Loops  */
+	 sign = ((flag == 1) ? 1.0 : -1.0);
+	 xp2 = n;
+	 for(it = 0; it < iter; it++)
+	 {
+			 xp = xp2;
+			 xp2 /= 2;
+			 w = PI / xp2;
+#ifdef DEBUG
+	printf("xp2=%d\n",xp2);
+#endif
+			 for(k = 0; k < xp2; k++)
+			 {
+					 arg = k * w;
+					 wr = cos(arg);
+					 wi = sign * sin(arg);
+					 i = k - xp;
+					 for(j = xp; j <= n; j += xp)
+					 {
+							 j1 = j + i;
+							 j2 = j1 + xp2;
+							 dr1 = ar[j1];
+							 dr2 = ar[j2];
+							 di1 = ai[j1];
+							 di2 = ai[j2];
+							 tr = dr1 - dr2;
+							 ti = di1 - di2;
+							 ar[j1] = dr1 + dr2;
+							 ai[j1] = di1 + di2;
+							 ar[j2] = tr * wr - ti * wi;
+							 ai[j2] = ti * wr + tr * wi;
+					 }
+			 }
+	 }
+
+	 /*  Digit Reverse Counter  */
+
+	 j1 = n / 2;
+	 j2 = n - 1;
+	 j = 1;
+#ifdef DEBUG
+	printf("j2=%d\n",j2);
+#endif
+	 for(i = 1; i <= j2; i++)
+	 {
+			 if(i < j)
+			 {
+					tr = ar[j-1];
+					ti = ai[j-1];
+					ar[j-1] = ar[i-1];
+					ai[j-1] = ai[i-1];
+					ar[i-1] = tr;
+					ai[i-1] = ti;
+			 }
+			 k = j1;
+			 while(k < j)
+			 {
+					j -= k;
+					k /= 2;
+			 }
+			 j += k;
+	 }
+	 if(flag == 0) return(0);
+	 w = n;
+	 for(i = 0; i < n; i++)
+	 {
+			 ar[i] /= w;
+			 ai[i] /= w;
+	 }
+	 return(0);
 }
-

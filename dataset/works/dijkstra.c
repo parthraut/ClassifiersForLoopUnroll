@@ -23,7 +23,7 @@ int cf(void *a, void *b)
 
 int dequeue()
 {
-    qsort(q, qp, sizeof(int), cf);
+    // qsort(q, qp, sizeof(int), cf);
     return q[--qp];
 }
 

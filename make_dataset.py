@@ -238,11 +238,12 @@ def generate_dataset():
         data = json.load(file)
 
     for filename in os.listdir("dataset"):
-        logging.info(f"---------- {filename} : Reading file... ---------")
 
         if not filename.endswith(".c"):
             print(f"{filename} not a c file, skipping")
             continue
+
+        logging.info(f"---------- {filename} : Reading file... ---------")
 
         if filename in data:
             if not rerun:
