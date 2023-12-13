@@ -12,9 +12,9 @@ Ready to dive in? Here's how to get started:
 
 Begin by cloning the repository to your local machine:
 
-\```bash
-git clone https://github.com/parthraut/ClassifiersForLoopUnroll
-\```
+
+`git clone https://github.com/parthraut/ClassifiersForLoopUnroll`
+
 
 #### 🛠 Building the Dataset
 
@@ -22,9 +22,7 @@ git clone https://github.com/parthraut/ClassifiersForLoopUnroll
 
 2. **Generate the Dataset:** Run the following command:
 
-   \```bash
-   python3 make_dataset.py
-   \```
+   `python3 make_dataset.py`
 
    - **Monitoring Progress:** Updates and errors will be logged in `results.log`.
 
