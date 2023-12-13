@@ -232,7 +232,7 @@ def generate_dataset():
     """ Generates Dataset from scratch. """
 
     # load json
-    rerun = False
+    rerun = True
 
     with open('results.json', 'r') as file:
         data = json.load(file)
@@ -240,7 +240,7 @@ def generate_dataset():
     for filename in os.listdir("dataset"):
 
         if not filename.endswith(".c"):
-            print(f"{filename} not a c file, skipping")
+            # print(f"{filename} not a c file, skipping")
             continue
 
         logging.info(f"---------- {filename} : Reading file... ---------")
