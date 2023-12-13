@@ -34,4 +34,4 @@ Begin by cloning the repository to your local machine:
 
 2. **Launch Training:** Utilize the provided Jupyter notebooks in the repository to train your models.
 
-   - **Customizable Models:** Feel free to tweak the models as per your project needs.
+   - **Customizable Models:** Feel free to tweak the models as needed.
