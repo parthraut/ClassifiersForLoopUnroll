@@ -1,0 +1,80 @@
+
+
+Features extracted per Loop:
+
+1. Number of ALU Floating Point Instructions
+2. Number of ALU Integer Instructions
+3. Number of Array Accesses
+4. Number of Array Reads
+5. Number of Array Writes
+6. Number of Branch Instructions
+7. Has Loop Carried Dependency (T/F)
+8. Number of Total Instructions
+9. Number of Total Inter-loop Dependencies
+10. Number of Anti Inter-loop Dependencies
+11. Number of Flow Inter-loop Dependencies
+12. Number of Output Inter-loop Dependencies
+13. Number of Total Intra-loop Dependencies
+14. Number of Anti Intra-loop Dependencies
+15. Number of Flow Intra-loop Dependencies
+16. Number of Output Intra-loop Dependencies
+17. Number of Load Instructions
+18. Loop Nest Level
+19. Max Inter-loop Dependency Distance
+20. Max Inter-loop Anti Dependency Distance
+21. Max Inter-loop Flow Dependency Distance
+22. Max Inter-loop Output Dependency Distance
+23. Max Intra-loop Dependency Distance
+24. Max Intra-loop Anti Dependency Distance
+25. Max Intra-loop Flow Dependency Distance
+26. Max Intra-loop Output Dependency Distance
+27. Number of Memory Instructions
+28. Number of Total Operands
+29. Number of "Other" Instructions
+30. Resmii with 111
+31. Resmii with 121
+32. Resmii with 211
+33. Number of Store Instructions
+34. Trip Count (-1 if not known)
+
+
+
+for each Function in Module:
+    for each loop in each function:
+        if loop is innermost nested:
+            json["optimal_luf"] = getOptimalLuf();
+            json["aluf"] = getAluf()
+            json["alui"] = 
+            json["array_accesses"] =
+            json["array_reads"] =
+            json["array_writes"] = 
+            json["branch"] = 
+            json["has_inter_loop_carried_dependency"] = 
+            json["instruction_sum"] =
+            json["inter_loop_dependencies"] = 
+            json["inter_loop_dependencies_anti"] = 
+            json["inter_loop_dependencies_flow"] = 
+            json["inter_loop_dependencies_output] = 
+            json["intra_loop_dependencies"] = 
+            json["intra_loop_dependencies_anti"] = 
+            json["intra_loop_dependencies_flow"] =
+            json["intra_loop_dependencies_output"] =
+            json["load"] =
+            json["loop_line_number"] =
+            json["loop_nest_level"] =
+            json["max_inter_loop_dependency_distance"] = 
+            json["max_inter_loop_dependency_distance_anti"] = 
+            json["max_inter_loop_dependency_distance_flow"] = 
+            json["max_inter_loop_dependency_distance_output"] = 
+            json["max_intra_loop_dependency_distance"] =
+            json["max_intra_loop_dependency_distance_anti"] = 
+            json["max_intra_loop_dependency_distance_flow"] = 
+            json["max_intra_loop_dependency_distance_output"] = 
+            json["mem"] = 
+            json["operand_sum"] =
+            json["other"] = 
+            json["resmii_111"] = 
+            json["resmii_121"] = 
+            json["resmii_211"] = 
+            json["store"] =
+            json["trip_count"] = 

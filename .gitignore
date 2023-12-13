@@ -162,3 +162,5 @@ cython_debug/
 .vscode/
 llvm-project-build/
 dataset_gen_code/
+
+external/

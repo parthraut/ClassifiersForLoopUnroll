@@ -29,8 +29,7 @@ void needlemanWunsch(char seq1[], char seq2[])
   }
 
   auto end_1 = std::chrono::high_resolution_clock::now();
-            auto duration_1 = std::chrono::duration_cast<std::chrono::nanoseconds>(end_1 - start_1);
-            add_to_loop(1, duration_1.count());
+            
   #pragma clang loop unroll(disable)
   for (int i = 1; i <= len1; ++i)
   {
